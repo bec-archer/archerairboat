@@ -1,0 +1,94 @@
+---
+import { Image } from 'astro:assets';
+import heroSandbar from '../assets/hero-sandbar.jpg';
+
+interface Props {
+  phone: string;
+  phoneHref: string;
+}
+const { phone, phoneHref } = Astro.props;
+---
+
+<section class="hero">
+  <div class="copy">
+    <p class="kicker">Private coastal airboat tours — Matlacha Pass &amp; Pine Island Sound</p>
+    <h1>Dolphins, mangroves, and water only inches deep.</h1>
+    <p class="lede">
+      Skim the saltwater flats with Capt. Bobby Archer — 30 years on these waters, on boats that
+      float in a quarter inch. Manatees, stingrays, sandbar walks, mangrove tunnels. Launching
+      right from Matlacha, minutes from Cape Coral. No hour-long van ride to a gator swamp.
+    </p>
+    <div class="actions">
+      <a class="cta" href={phoneHref}>Call or text {phone}</a>
+      <span class="proof">★ 5.0 on TripAdvisor · 40 reviews</span>
+    </div>
+  </div>
+
+  <div class="water">
+    <Image
+      src={heroSandbar}
+      alt="Archer airboat beached on a shallow sandbar in Matlacha Pass under a blue sky"
+      widths={[480, 800, 1200]}
+      sizes="(max-width: 48rem) 100vw, 40vw"
+      loading="eager"
+    />
+  </div>
+</section>
+
+<style>
+  .hero {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: clamp(0.75rem, 2vw, 2rem) 1.25rem clamp(2.25rem, 4vw, 3.5rem);
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: clamp(1.5rem, 3vw, 3.5rem);
+    align-items: center;
+  }
+  .kicker {
+    color: var(--pine-deep);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin: 0 0 0.75rem;
+  }
+  h1 {
+    font-family: var(--font-display);
+    font-size: var(--step-5);
+    font-weight: 560;
+    line-height: 1.06;
+    letter-spacing: -0.01em;
+    margin: 0 0 0.85rem;
+    text-wrap: balance;
+  }
+  .lede {
+    font-size: var(--step-1);
+    color: var(--ink-soft);
+    max-width: var(--measure);
+    margin: 0 0 1.35rem;
+  }
+  .actions { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
+  .cta {
+    background: var(--aqua);
+    color: var(--shell);
+    font-weight: 800;
+    text-decoration: none;
+    padding: 0.95rem 1.6rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+  }
+  .cta:hover { background: var(--aqua-deep); }
+  .proof { color: var(--pine-deep); font-weight: 700; font-size: 0.92rem; }
+  .water {
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    box-shadow: var(--shadow-soft);
+    aspect-ratio: 4 / 3;
+  }
+  .water img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  @media (max-width: 48rem) {
+    .hero { grid-template-columns: 1fr; }
+    .water { aspect-ratio: 16 / 9; }
+  }
+</style>

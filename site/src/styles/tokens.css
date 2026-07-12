@@ -1,0 +1,33 @@
+/* Archer Airboat Tours — bright coastal design tokens */
+
+:root {
+  /* Color — sun-bleached sand, clear aqua, deep sea ink */
+  --sand: #f9f5ec;
+  --sand-deep: #f0e8d8;
+  --shell: #ffffff;
+  --aqua: #0e7490;        /* primary action */
+  --aqua-deep: #155e6e;   /* hover / emphasis */
+  --aqua-mist: #d9eef2;   /* tinted section backgrounds */
+  --ink: #123a3f;         /* text — deep sea, not black */
+  --ink-soft: #3d6167;    /* secondary text */
+  --pine: #2f5d46;        /* forest green accent — Pine Island */
+  --pine-deep: #234936;   /* darker pine for text-on-light */
+  --coral: #e4593f;       /* reserved; currently unused */
+
+  /* Type */
+  --font-display: 'Fraunces Variable', Georgia, serif;
+  --font-body: 'Nunito Sans Variable', system-ui, -apple-system, sans-serif;
+
+  /* Scale */
+  --step-5: clamp(2.2rem, 1.4rem + 3.4vw, 3.5rem);   /* hero h1 */
+  --step-3: clamp(1.7rem, 1.3rem + 1.8vw, 2.4rem);   /* section h2 */
+  --step-1: clamp(1.05rem, 1rem + 0.3vw, 1.2rem);    /* lede */
+  --step-0: 1rem;
+
+  /* Shape & rhythm */
+  --radius: 0.75rem;
+  --radius-lg: 1.25rem;
+  --space-section: clamp(4rem, 3rem + 5vw, 7rem);
+  --measure: 62ch;
+  --shadow-soft: 0 10px 30px -12px rgba(18, 58, 63, 0.25);
+}

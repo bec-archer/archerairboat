@@ -1,0 +1,7 @@
+{
+  "project_slug": "archer-airboat",
+  "spec_files": [
+    "Docs/Archer_Airboat_Booking_Spec.md"
+  ],
+  "todo_file": "Docs/PROJECT_TODO.md"
+}

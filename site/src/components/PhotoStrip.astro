@@ -1,0 +1,47 @@
+---
+import { Image } from 'astro:assets';
+import mangroves from '../assets/mangrove-tunnels.jpg';
+import sandbarWalk from '../assets/sandbar-walk.jpg';
+import sunset from '../assets/sunset-tour.jpg';
+
+const shots = [
+  { src: mangroves, alt: 'The airboat tucked into a mangrove shoreline', caption: 'Into the mangrove backwaters' },
+  { src: sandbarWalk, alt: 'Two guests and a small dog standing on a submerged sandbar in ankle-deep water', caption: 'Sandbar stops — walk where boats can’t float' },
+  { src: sunset, alt: 'Sunset over Pine Island Sound from the water', caption: 'Sunset over Pine Island Sound' },
+];
+---
+
+<section class="strip">
+  <ul>
+    {shots.map((s) => (
+      <li>
+        <Image src={s.src} alt={s.alt} widths={[400, 700]} sizes="(max-width: 48rem) 100vw, 33vw" />
+        <span>{s.caption}</span>
+      </li>
+    ))}
+  </ul>
+</section>
+
+<style>
+  .strip { padding: 0 1.25rem var(--space-section); }
+  ul {
+    list-style: none;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+  }
+  li {
+    border-radius: var(--radius);
+    overflow: hidden;
+    background: var(--shell);
+    box-shadow: var(--shadow-soft);
+    display: flex;
+    flex-direction: column;
+  }
+  li :global(img) { width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; display: block; }
+  li span { padding: 0.75rem 1rem; font-size: 0.92rem; color: var(--ink-soft); font-weight: 600; }
+  @media (max-width: 48rem) { ul { grid-template-columns: 1fr; } }
+</style>

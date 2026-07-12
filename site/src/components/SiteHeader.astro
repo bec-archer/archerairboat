@@ -1,0 +1,80 @@
+---
+interface Props {
+  phone: string;
+  phoneHref: string;
+}
+const { phone, phoneHref } = Astro.props;
+---
+
+<header>
+  <a class="wordmark" href="/">
+    <svg
+      class="arrow"
+      viewBox="0 0 30 10"
+      width="30"
+      height="10"
+      style="width: 1.35em; height: 0.45em; flex: none;"
+      aria-hidden="true"
+    >
+      <circle cx="3" cy="5" r="1.6" fill="currentColor"></circle>
+      <circle cx="10" cy="5" r="1.6" fill="currentColor"></circle>
+      <circle cx="17" cy="5" r="1.6" fill="currentColor"></circle>
+      <path d="M23 0.8L29.5 5L23 9.2Z" fill="currentColor"></path>
+    </svg>
+    Archer Airboat Tours
+  </a>
+  <a class="phone" href={phoneHref}>
+    <span class="ring" aria-hidden="true"></span>
+    {phone}
+  </a>
+</header>
+
+<style>
+  header {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 1.1rem 1.25rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+  .wordmark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: 'Montserrat Variable', Montserrat, sans-serif; /* matches the old site's title */
+    font-size: 2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    color: var(--ink);
+    white-space: nowrap;
+  }
+  .arrow { color: var(--aqua); }
+  .phone {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-weight: 700;
+    color: var(--aqua-deep);
+    text-decoration: none;
+    padding: 0.55rem 1rem;
+    border: 2px solid var(--aqua);
+    border-radius: 999px;
+    background: var(--shell);
+    white-space: nowrap;
+  }
+  .phone:hover { background: var(--aqua); color: var(--shell); }
+  .ring {
+    width: 0.55rem;
+    height: 0.55rem;
+    border-radius: 50%;
+    background: var(--pine);
+    flex: none;
+  }
+  @media (max-width: 30rem) {
+    .wordmark { font-size: 1.1rem; }
+  }
+</style>

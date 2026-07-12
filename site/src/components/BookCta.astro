@@ -1,0 +1,47 @@
+---
+interface Props {
+  phone: string;
+  phoneHref: string;
+}
+const { phone, phoneHref } = Astro.props;
+---
+
+<section class="book">
+  <div class="inner">
+    <h2>Ready to get out on the water?</h2>
+    <p>
+      Every tour is private — just your group and the captain. Call or text to check dates
+      and rates.
+      <!-- TODO: tour cards from the tours collection once Elise confirms real data -->
+      <!-- TODO: Request-a-Ride form → Supabase booking_requests (anon insert) -->
+    </p>
+    <a class="cta" href={phoneHref}>{phone}</a>
+    <p class="where">Launching from Matlacha, FL — near D&amp;D Bait &amp; Tackle, 3922 Pine Island Rd NW</p>
+  </div>
+</section>
+
+<style>
+  .book {
+    background: linear-gradient(180deg, var(--aqua) 0%, var(--aqua-deep) 100%);
+    color: var(--shell);
+    padding: var(--space-section) 1.25rem;
+    text-align: center;
+  }
+  .inner { max-width: 44rem; margin: 0 auto; }
+  h2 { font-family: var(--font-display); font-size: var(--step-3); font-weight: 560; margin: 0 0 0.75rem; }
+  p { color: #e4f4f7; margin: 0 0 1.5rem; }
+  .cta {
+    display: inline-block;
+    background: var(--shell);
+    color: var(--aqua-deep);
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+    text-decoration: none;
+    padding: 0.9rem 2rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+  }
+  .cta:hover { transform: translateY(-1px); }
+  .where { font-size: 0.9rem; opacity: 0.85; margin-top: 1.5rem; }
+</style>

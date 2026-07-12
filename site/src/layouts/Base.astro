@@ -1,0 +1,49 @@
+---
+import '@fontsource-variable/fraunces';
+import '@fontsource-variable/nunito-sans';
+import '@fontsource-variable/montserrat';
+import '../styles/tokens.css';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+
+// Staging guard: build with PUBLIC_NOINDEX=1 while the site lives on the
+// temporary domain (archerairboats.com). Flip off when archerairboattours.com
+// cuts over — SEO equity must concentrate on the canonical domain only.
+const noindex = import.meta.env.PUBLIC_NOINDEX === '1';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:type" content="website" />
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style is:global>
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: var(--font-body);
+    color: var(--ink);
+    background: var(--sand);
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection { background: var(--aqua-mist); }
+</style>

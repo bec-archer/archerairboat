@@ -1,0 +1,50 @@
+---
+// The positioning section: coastal vs. Everglades. This is the SEO thesis in UI form.
+---
+
+<section class="why">
+  <div class="inner">
+    <h2>Not an Everglades tour. On purpose.</h2>
+    <div class="cols">
+      <div class="col us">
+        <h3>An Archer tour</h3>
+        <ul>
+          <li>Launches right in Matlacha — zero drive time</li>
+          <li>Saltwater flats: dolphins, manatees, stingrays</li>
+          <li>Private — your group only, every trip</li>
+          <li>Sandbar stops you can step out onto</li>
+        </ul>
+      </div>
+      <div class="col them">
+        <h3>The typical airboat ad</h3>
+        <ul>
+          <li>An hour-plus van ride to a swamp</li>
+          <li>Gators from a crowded bench seat</li>
+          <li>Scheduled departures, strangers included</li>
+          <li>Same loop, every hour, all day</li>
+        </ul>
+      </div>
+    </div>
+    <p class="cred">
+      Capt. Bobby Archer has run these waters for 30 years — he built airboats before he ran
+      tours on them. Nobody knows Matlacha Pass shallower.
+    </p>
+  </div>
+</section>
+
+<style>
+  .why { padding: var(--space-section) 1.25rem; }
+  .inner { max-width: 72rem; margin: 0 auto; }
+  h2 { font-family: var(--font-display); font-size: var(--step-3); font-weight: 560; margin: 0 0 1.75rem; }
+  .cols { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+  .col { border-radius: var(--radius); padding: 1.4rem 1.5rem; }
+  .us { background: var(--shell); box-shadow: var(--shadow-soft); border-top: 4px solid var(--pine); }
+  .us h3 { color: var(--pine-deep); }
+  .them { background: var(--sand-deep); border-top: 4px solid transparent; }
+  h3 { margin: 0 0 0.75rem; font-size: 1rem; letter-spacing: 0.04em; text-transform: uppercase; }
+  .them h3, .them li { color: var(--ink-soft); }
+  ul { margin: 0; padding-left: 1.1rem; }
+  li { margin-bottom: 0.45rem; }
+  .cred { color: var(--ink-soft); max-width: var(--measure); margin: 1.75rem 0 0; }
+  @media (max-width: 44rem) { .cols { grid-template-columns: 1fr; } }
+</style>

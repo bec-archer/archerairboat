@@ -1,0 +1,54 @@
+---
+const sights = [
+  { name: 'Dolphins', note: 'Riding the wake through Matlacha Pass' },
+  { name: 'Manatees', note: 'Slow giants in the shallow grass flats' },
+  { name: 'Stingrays', note: 'Gliding under the boat in inches of water' },
+  { name: 'Sandbar walks', note: 'Step off onto bars no other boat can reach' },
+  { name: 'Mangrove tunnels', note: 'Backwaters of Pine Island Sound' },
+  { name: 'Wading birds', note: 'Herons, egrets, and the occasional hermit crab' },
+];
+---
+
+<section class="wildlife">
+  <div class="inner">
+    <h2>What you'll see out there</h2>
+    <p class="sub">
+      This is coastal saltwater — a different world from the Everglades. The boat draws about a
+      quarter inch, so Bobby goes where nothing else floats.
+    </p>
+    <ul>
+      {sights.map((s) => (
+        <li>
+          <strong>{s.name}</strong>
+          <span>{s.note}</span>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
+
+<style>
+  .wildlife {
+    background: linear-gradient(180deg, var(--aqua) 0%, var(--aqua-deep) 100%);
+    padding: var(--space-section) 1.25rem;
+  }
+  .inner { max-width: 72rem; margin: 0 auto; }
+  h2 { font-family: var(--font-display); font-size: var(--step-3); font-weight: 560; margin: 0 0 0.5rem; color: var(--shell); }
+  .sub { color: #dcf0f4; max-width: var(--measure); margin: 0 0 2rem; }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1rem;
+  }
+  li {
+    background: var(--shell);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    box-shadow: var(--shadow-soft);
+  }
+  li strong { display: block; font-size: 1.05rem; margin-bottom: 0.2rem; color: var(--pine-deep); }
+  li span { color: var(--ink-soft); font-size: 0.94rem; }
+</style>

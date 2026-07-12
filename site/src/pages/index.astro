@@ -1,0 +1,40 @@
+---
+import Base from '../layouts/Base.astro';
+import SiteHeader from '../components/SiteHeader.astro';
+import Hero from '../components/Hero.astro';
+import Wildlife from '../components/Wildlife.astro';
+import WhyCoastal from '../components/WhyCoastal.astro';
+import PhotoStrip from '../components/PhotoStrip.astro';
+import VideoSection from '../components/VideoSection.astro';
+import BookCta from '../components/BookCta.astro';
+import SiteFooter from '../components/SiteFooter.astro';
+
+// Verified business facts from the takeover handoff. Tour names, durations,
+// and prices are deliberately absent until Elise confirms them.
+const PHONE = '(239) 633-6645';
+const PHONE_HREF = 'tel:+12396336645';
+const VIDEO_ID = 'yqt7Pe0jS9o'; // Bobby's channel — placeholder until the new hero cut
+
+const title = 'Archer Airboat Tours — Private Coastal Airboat Tours in Matlacha, FL';
+const description =
+  'Private airboat tours of Matlacha Pass and Pine Island Sound with Capt. Bobby Archer. ' +
+  'Dolphins, manatees, mangroves, and sandbar stops — coastal saltwater, no Everglades drive. ' +
+  'Minutes from Cape Coral and Fort Myers.';
+---
+
+<Base {title} {description}>
+  <SiteHeader phone={PHONE} phoneHref={PHONE_HREF} />
+  <main>
+    <Hero phone={PHONE} phoneHref={PHONE_HREF} />
+    <Wildlife />
+    <WhyCoastal />
+    <PhotoStrip />
+    <VideoSection videoId={VIDEO_ID} />
+    <BookCta phone={PHONE} phoneHref={PHONE_HREF} />
+  </main>
+  <SiteFooter phone={PHONE} phoneHref={PHONE_HREF} />
+</Base>
+
+<style>
+  main { display: block; }
+</style>

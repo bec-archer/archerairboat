@@ -1,0 +1,19 @@
+// Cloudflare Workers static-assets deploy (assets-only, no worker script).
+// Custom domain: archerairboats.com (the plural — Bec's Cloudflare account).
+// Deploying auto-creates the DNS records + certs since the zone lives in the
+// same account. Apex AND www both attached — the missing-www dead-end was the
+// original "site is down" mystery; never again.
+//
+// When archerairboattours.com escapes GoDaddy: add it here (apex + www), make
+// it canonical, drop PUBLIC_NOINDEX from the deploy, and 301 the plural → tours.
+{
+  "name": "archer-airboat-site",
+  "compatibility_date": "2026-07-12",
+  "assets": {
+    "directory": "./dist"
+  },
+  "routes": [
+    { "pattern": "archerairboats.com", "custom_domain": true },
+    { "pattern": "www.archerairboats.com", "custom_domain": true }
+  ]
+}
