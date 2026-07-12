@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import heroSandbar from '../assets/hero-sandbar.jpg';
+import flatsHero from '../assets/flats-hero.jpg';
 
 interface Props {
   phone: string;
@@ -10,43 +10,79 @@ const { phone, phoneHref } = Astro.props;
 ---
 
 <section class="hero">
+  <Image
+    class="backdrop"
+    src={flatsHero}
+    alt="Archer airboat resting on the shallow saltwater flats of Matlacha Pass under a wide blue sky"
+    widths={[768, 1280, 1920, 2560]}
+    sizes="100vw"
+    loading="eager"
+    fetchpriority="high"
+  />
+  <div class="scrim" aria-hidden="true"></div>
   <div class="copy">
     <p class="kicker">Private coastal airboat tours — Matlacha Pass &amp; Pine Island Sound</p>
     <h1>Dolphins, mangroves, and water only inches deep.</h1>
     <p class="lede">
       Skim the saltwater flats with Capt. Bobby Archer — 30 years on these waters, on boats that
-      float in a quarter inch. Manatees, stingrays, sandbar walks, mangrove tunnels. Launching
+      float in inches of water. Manatees, stingrays, sandbar walks, mangrove tunnels. Launching
       right from Matlacha, minutes from Cape Coral. No hour-long van ride to a gator swamp.
     </p>
     <div class="actions">
       <a class="cta" href={phoneHref}>Call or text {phone}</a>
-      <span class="proof">★ 5.0 on TripAdvisor · 40 reviews</span>
+      <a
+        class="proof"
+        href="https://www.tripadvisor.com/Attraction_Review-g34427-d3815798-Reviews-Archer_Airboat_Tours-Matlacha_Florida.html"
+        target="_blank"
+        rel="noopener"
+      >★ 5.0 on TripAdvisor · 40 reviews</a>
     </div>
-  </div>
-
-  <div class="water">
-    <Image
-      src={heroSandbar}
-      alt="Archer airboat beached on a shallow sandbar in Matlacha Pass under a blue sky"
-      widths={[480, 800, 1200]}
-      sizes="(max-width: 48rem) 100vw, 40vw"
-      loading="eager"
-    />
   </div>
 </section>
 
 <style>
   .hero {
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: clamp(0.75rem, 2vw, 2rem) 1.25rem clamp(2.25rem, 4vw, 3.5rem);
-    display: grid;
-    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
-    gap: clamp(1.5rem, 3vw, 3.5rem);
+    position: relative;
+    min-height: clamp(32rem, 82svh, 48rem);
+    display: flex;
     align-items: center;
+    overflow: hidden;
+    isolation: isolate;
+  }
+  .backdrop {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: 62% 42%;
+    z-index: -2;
+    /* Zoom anchored left so the boat drifts right, clear of the copy column */
+    transform: scale(1.18);
+    transform-origin: 0% 55%;
+  }
+  .scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background:
+      linear-gradient(92deg,
+        rgba(9, 33, 38, 0.72) 0%,
+        rgba(9, 33, 38, 0.52) 38%,
+        rgba(9, 33, 38, 0.12) 68%,
+        rgba(9, 33, 38, 0) 85%),
+      linear-gradient(180deg,
+        rgba(9, 33, 38, 0.18) 0%,
+        rgba(9, 33, 38, 0) 30%);
+  }
+  .copy {
+    max-width: 72rem;
+    width: 100%;
+    margin: 0 auto;
+    padding: clamp(2.5rem, 6vw, 4.5rem) 1.25rem;
   }
   .kicker {
-    color: var(--pine-deep);
+    color: #bfe8ef;
     font-weight: 800;
     font-size: 0.85rem;
     letter-spacing: 0.09em;
@@ -60,13 +96,17 @@ const { phone, phoneHref } = Astro.props;
     line-height: 1.06;
     letter-spacing: -0.01em;
     margin: 0 0 0.85rem;
+    max-width: 21ch;
     text-wrap: balance;
+    color: var(--shell);
+    text-shadow: 0 1px 24px rgba(9, 33, 38, 0.35);
   }
   .lede {
     font-size: var(--step-1);
-    color: var(--ink-soft);
-    max-width: var(--measure);
-    margin: 0 0 1.35rem;
+    color: #eaf6f8;
+    max-width: 46ch;
+    margin: 0 0 1.5rem;
+    text-shadow: 0 1px 16px rgba(9, 33, 38, 0.45);
   }
   .actions { display: flex; align-items: center; gap: 1.1rem; flex-wrap: wrap; }
   .cta {
@@ -79,16 +119,30 @@ const { phone, phoneHref } = Astro.props;
     box-shadow: var(--shadow-soft);
   }
   .cta:hover { background: var(--aqua-deep); }
-  .proof { color: var(--pine-deep); font-weight: 700; font-size: 0.92rem; }
-  .water {
-    border-radius: var(--radius-lg);
-    overflow: hidden;
-    box-shadow: var(--shadow-soft);
-    aspect-ratio: 4 / 3;
+  .proof {
+    color: #dff2f5;
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: underline;
+    text-decoration-color: rgba(223, 242, 245, 0.45);
+    text-underline-offset: 0.25em;
   }
-  .water img { width: 100%; height: 100%; display: block; object-fit: cover; }
+  .proof:hover { text-decoration-color: #dff2f5; }
+
+  @media (min-width: 90rem) {
+    .backdrop { transform: scale(1.28); }
+  }
+
   @media (max-width: 48rem) {
-    .hero { grid-template-columns: 1fr; }
-    .water { aspect-ratio: 16 / 9; }
+    .hero { min-height: clamp(30rem, 88svh, 42rem); align-items: flex-end; }
+    .backdrop { object-position: 58% 40%; transform: none; }
+    .scrim {
+      background:
+        linear-gradient(180deg,
+          rgba(9, 33, 38, 0.1) 0%,
+          rgba(9, 33, 38, 0.25) 35%,
+          rgba(9, 33, 38, 0.78) 78%,
+          rgba(9, 33, 38, 0.85) 100%);
+    }
   }
 </style>

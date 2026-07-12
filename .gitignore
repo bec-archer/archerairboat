@@ -8,3 +8,6 @@ dist/
 
 # Photoshop sources are too big for GitHub (100MB limit) — keep local only
 *.psd
+
+# Cowork VM cannot delete files; stale files get parked here — safe to trash
+_to_delete/

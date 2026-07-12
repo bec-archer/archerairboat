@@ -1,0 +1,80 @@
+---
+// Rates confirmed by Elise (via Bec, 2026-07-12): couple ride $180 flat,
+// 3+ riders $65/person, 1.5-hour ride, 6 person max. Do not add tour types
+// or prices beyond these without confirmation.
+interface Props {
+  phone: string;
+  phoneHref: string;
+}
+const { phone, phoneHref } = Astro.props;
+---
+
+<section class="rates" id="rates">
+  <div class="inner">
+    <h2>Rates</h2>
+    <p class="sub">One private ride, one simple price. About an hour and a half on the water — up to 6 guests.</p>
+    <div class="cards">
+      <div class="card">
+        <p class="label">Couples</p>
+        <p class="price">$180</p>
+        <p class="detail">Flat rate for two — the whole boat to yourselves.</p>
+      </div>
+      <div class="card">
+        <p class="label">Groups of 3–6</p>
+        <p class="price">$65<span class="per">/person</span></p>
+        <p class="detail">Bring the family or crew — 6 person max.</p>
+      </div>
+    </div>
+    <p class="note">Every ride is private — just your group and the captain. <a href={phoneHref}>Call or text {phone}</a> to book.</p>
+  </div>
+</section>
+
+<style>
+  .rates {
+    background: var(--aqua-mist);
+    padding: var(--space-section) 1.25rem;
+  }
+  .inner { max-width: 52rem; margin: 0 auto; text-align: center; }
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 560;
+    margin: 0 0 0.5rem;
+  }
+  .sub { color: var(--ink-soft); margin: 0 auto 2rem; max-width: 46ch; }
+  .cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+  .card {
+    background: var(--shell);
+    border-radius: var(--radius-lg);
+    padding: 2rem 1.5rem 1.75rem;
+    box-shadow: var(--shadow-soft);
+  }
+  .label {
+    color: var(--pine-deep);
+    font-weight: 800;
+    font-size: 0.85rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin: 0 0 0.35rem;
+  }
+  .price {
+    font-family: var(--font-display);
+    font-size: clamp(2.4rem, 2rem + 2vw, 3.2rem);
+    font-weight: 600;
+    line-height: 1;
+    color: var(--aqua-deep);
+    margin: 0 0 0.6rem;
+  }
+  .per { font-size: 0.45em; font-weight: 600; color: var(--ink-soft); margin-left: 0.2em; }
+  .detail { color: var(--ink-soft); margin: 0; font-size: 0.95rem; }
+  .note { color: var(--ink-soft); margin: 0; }
+  .note a { color: var(--aqua-deep); font-weight: 700; }
+  @media (max-width: 36rem) {
+    .cards { grid-template-columns: 1fr; }
+  }
+</style>

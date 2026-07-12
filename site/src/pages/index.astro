@@ -6,11 +6,13 @@ import Wildlife from '../components/Wildlife.astro';
 import WhyCoastal from '../components/WhyCoastal.astro';
 import PhotoStrip from '../components/PhotoStrip.astro';
 import VideoSection from '../components/VideoSection.astro';
+import Rates from '../components/Rates.astro';
 import BookCta from '../components/BookCta.astro';
 import SiteFooter from '../components/SiteFooter.astro';
 
-// Verified business facts from the takeover handoff. Tour names, durations,
-// and prices are deliberately absent until Elise confirms them.
+// Verified business facts from the takeover handoff. Rates confirmed by
+// Elise via Bec 2026-07-12 (see Rates.astro) — anything beyond those waits
+// on confirmation.
 const PHONE = '(239) 633-6645';
 const PHONE_HREF = 'tel:+12396336645';
 const VIDEO_ID = 'yqt7Pe0jS9o'; // Bobby's channel — placeholder until the new hero cut
@@ -30,6 +32,7 @@ const description =
     <WhyCoastal />
     <PhotoStrip />
     <VideoSection videoId={VIDEO_ID} />
+    <Rates phone={PHONE} phoneHref={PHONE_HREF} />
     <BookCta phone={PHONE} phoneHref={PHONE_HREF} />
   </main>
   <SiteFooter phone={PHONE} phoneHref={PHONE_HREF} />
