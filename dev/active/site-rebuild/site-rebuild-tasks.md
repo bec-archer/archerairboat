@@ -1,12 +1,19 @@
 # Site Rebuild — Tasks
 
-**Last updated:** 2026-07-12 (session 3, full-bleed hero + rates)
+**Last updated:** 2026-07-12 (session 3, GO LIVE: hero/rates/mobile + domain cutover)
 
 ## In Progress
 
-- [ ] First push to GitHub (bec-archer/archerairboat) + first `npm run deploy:staging` → site live at **archerairboats.com** (apex + www, noindex) → text link to Bobby & Elise
+- [ ] archerairboat.com (singular) 301 forwarding at GoDaddy → tours. Domain forward configured (https, 301) but save blocked on GoDaddy SMS 2FA to Bobby's phone; also still to do: the **www** subdomain forward in the same Forwarding tab
+- [ ] Retire GoDaddy **Business Website Builder** plan on archerairboattours.com (billing action, Bec clicks; only after confirming the new site is stable). Also: GoDaddy "Email Marketing Starter" expires 8/4/2026 — unused, let it lapse, do NOT renew
 
 ## Done
+
+- [x] **SITE IS LIVE at https://archerairboattours.com** (2026-07-12) — apex + www, indexable, canonical correct. Bobby & Elise gave the all-clear on the staging build first.
+- [x] First push to GitHub (bec-archer/archerairboat) + staging deploy to archerairboats.com → link sent to Bobby & Elise. Pre-push fix: `images/flats-hero.psd` (156MB, over GitHub's 100MB limit) stripped from history via amend; `*.psd` gitignored; local branch `backup-pre-psd-strip` holds the old history (never push it)
+- [x] Mobile polish round (2026-07-12, from Bec's phone review): header overflow fix (no h-scroll 320–430px), hero reframed so the boat sits between headline and lede, Rates prices to Montserrat (Fraunces top-heavy 8), crew copy (Elise + Beauregard), site-wide em-dash purge
+- [x] DNS cutover (2026-07-12): archerairboattours.com zone added to Bec's Cloudflare (free), all 15 records imported DNS-only **including the Microsoft 365 MX/SPF/autodiscover set — ask Bobby if he ever had an @archerairboattours.com mailbox; no active M365 product in the GoDaddy account, likely leftovers**. DNSSEC was off. NS swapped at GoDaddy → jean/rocky.ns.cloudflare.com, propagated in minutes. Old apex A records deleted; Workers custom domains attached (tours + plural, apex + www each)
+- [x] 301 redirect rule on archerairboats.com zone → tours (all requests, path + query preserved, verified live)
 
 - [x] Lane decision — Lane B: Astro + Keystatic on Cloudflare (2026-07-12, verified pricing/maintenance first)
 - [x] Scaffold `site/` — Astro 7 + Keystatic (dev-only admin), content schemas, homepage skeleton with verified facts
@@ -22,8 +29,7 @@
 
 - [ ] Tours / Meet the Captain / FAQ / Contact pages (keyword-driven titles per handoff tiers)
 - [ ] schema.org JSON-LD (LocalBusiness + TouristTrip) + sitemap
-- [ ] Cloudflare deploy (Workers static assets) from the GitHub repo → custom domain **archerairboats.com** (already on Cloudflare NS, Bec's account). Build with `PUBLIC_NOINDEX=1` until the tours domain cuts over — the plural must not accumulate SEO equity
-- [ ] Google Business Profile claim/optimize (biggest free SEO lever)
+- [ ] Google Business Profile claim/optimize (biggest free SEO lever) — setup pack ready at `Docs/GBP_Setup_Pack.md`; blocked on the 4-item ASK list in that doc (address, hours, opening year, photo sign-off)
 - [ ] Request-a-Ride form embed → Supabase booking_requests
 - [ ] Decide Elise editing flow (Keystatic Cloud / GitHub mode / Bec-only)
 - [ ] Wire homepage copy to the Keystatic `site` singleton (currently verified constants in index.astro)
@@ -31,7 +37,7 @@
 
 ## Blocked / Parked
 
-- [ ] DNS cutover + domain forwarding fix + Website Builder retirement — blocked by: GoDaddy delegate access
+_(nothing currently blocked)_
 
 ## Notes
 
