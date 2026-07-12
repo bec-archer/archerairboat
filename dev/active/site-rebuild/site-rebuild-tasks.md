@@ -4,8 +4,8 @@
 
 ## In Progress
 
-- [ ] archerairboat.com (singular) 301 forwarding at GoDaddy → tours. Domain forward configured (https, 301) but save blocked on GoDaddy SMS 2FA to Bobby's phone; also still to do: the **www** subdomain forward in the same Forwarding tab
-- [ ] Retire GoDaddy **Business Website Builder** plan on archerairboattours.com (billing action, Bec clicks; only after confirming the new site is stable). Also: GoDaddy "Email Marketing Starter" expires 8/4/2026 — unused, let it lapse, do NOT renew
+- [ ] archerairboat.com (singular) 301 forwarding at GoDaddy → tours: **saved** (apex + www, https, 301, 2FA'd by Bobby/Elise) but GoDaddy activation pending (up to a few hours, SSL cert). Claude checks again ~8pm ET 2026-07-12
+- [ ] Retire GoDaddy **Business Website Builder** plan on archerairboattours.com (billing action, Bec clicks) — **only after the singular's forwarding is confirmed live** (the builder currently answers on archerairboat.com). Also: GoDaddy "Email Marketing Starter" expires 8/4/2026 — unused, let it lapse, do NOT renew
 
 ## Done
 
