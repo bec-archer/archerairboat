@@ -134,14 +134,30 @@ const { phone, phoneHref } = Astro.props;
   }
 
   @media (max-width: 48rem) {
-    .hero { min-height: clamp(30rem, 88svh, 42rem); align-items: flex-end; }
-    .backdrop { object-position: 58% 40%; transform: none; }
+    .hero { min-height: clamp(32rem, 94svh, 46rem); align-items: stretch; }
+    .backdrop {
+      /* Frame the boat in the gap between headline and lede */
+      object-position: 58% 66%;
+      transform: scale(1.18);
+      transform-origin: 50% 50%;
+    }
+    /* Headline lives in the sky, lede + CTA sit at the bottom —
+       the flexible gap in between is the boat's window */
+    .copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding-top: 1.75rem;
+    }
+    h1 { margin-bottom: auto; }
     .scrim {
       background:
         linear-gradient(180deg,
-          rgba(9, 33, 38, 0.1) 0%,
-          rgba(9, 33, 38, 0.25) 35%,
-          rgba(9, 33, 38, 0.78) 78%,
+          rgba(9, 33, 38, 0.42) 0%,
+          rgba(9, 33, 38, 0.22) 26%,
+          rgba(9, 33, 38, 0.04) 44%,
+          rgba(9, 33, 38, 0.12) 58%,
+          rgba(9, 33, 38, 0.78) 82%,
           rgba(9, 33, 38, 0.85) 100%);
     }
   }

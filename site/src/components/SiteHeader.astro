@@ -38,13 +38,14 @@ const { phone, phoneHref } = Astro.props;
     align-items: center;
     justify-content: space-between;
     gap: 1rem;
+    flex-wrap: wrap; /* worst case the pill wraps below — never horizontal scroll */
   }
   .wordmark {
     display: inline-flex;
     align-items: center;
     gap: 0.6rem;
     font-family: 'Montserrat Variable', Montserrat, sans-serif; /* matches the old site's title */
-    font-size: 2rem;
+    font-size: clamp(1rem, 4vw, 2rem);
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.04em;
@@ -75,6 +76,7 @@ const { phone, phoneHref } = Astro.props;
     flex: none;
   }
   @media (max-width: 30rem) {
-    .wordmark { font-size: 1.1rem; }
+    header { padding: 0.9rem 1rem; gap: 0.6rem; }
+    .phone { font-size: 0.9rem; padding: 0.45rem 0.8rem; gap: 0.4rem; }
   }
 </style>
