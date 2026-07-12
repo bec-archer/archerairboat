@@ -13,10 +13,10 @@ last_updated: 2026-07-12
 
 ## Foundation & Data Layer
 
-- ⬜ Supabase schema
-- ⬜ Row Level Security policies
+- ✅ Supabase schema
+- ✅ Row Level Security policies
 - ⬜ Phone-number authentication
-- ⬜ Realtime on bookings
+- ✅ Realtime on bookings
 - ⬜ Seed data
 
 ---

@@ -5,3 +5,6 @@ dist/
 .env
 .env.*
 !.env.example
+
+# Photoshop sources are too big for GitHub (100MB limit) — keep local only
+*.psd

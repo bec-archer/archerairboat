@@ -20,7 +20,7 @@ Reuses patterns Bec already runs: Supabase Edge Functions + webhooks (job-scrape
 
 ## Milestone: Foundation & Data Layer
 
-**Status:** planned
+**Status:** in_progress
 **Description:** Database schema, security, and phone-based auth that everything else builds on.
 
 ### Features
