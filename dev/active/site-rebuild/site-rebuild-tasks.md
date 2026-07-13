@@ -4,8 +4,7 @@
 
 ## In Progress
 
-- [ ] archerairboat.com (singular) 301 forwarding at GoDaddy → tours: **saved** (apex + www, https, 301, 2FA'd by Bobby/Elise) but GoDaddy activation pending (up to a few hours, SSL cert). Claude checks again ~8pm ET 2026-07-12
-- [ ] Retire GoDaddy **Business Website Builder** plan on archerairboattours.com (billing action, Bec clicks) — **only after the singular's forwarding is confirmed live** (the builder currently answers on archerairboat.com). Also: GoDaddy "Email Marketing Starter" expires 8/4/2026 — unused, let it lapse, do NOT renew
+- [ ] Retire GoDaddy **Business Website Builder** plan on archerairboattours.com (billing action, Bec clicks) — **cleared to do now**: all three domains verified redirecting/serving 2026-07-13. Also: GoDaddy "Email Marketing Starter" expires 8/4/2026 — unused, let it lapse, do NOT renew
 
 ## Done
 
@@ -14,6 +13,7 @@
 - [x] Mobile polish round (2026-07-12, from Bec's phone review): header overflow fix (no h-scroll 320–430px), hero reframed so the boat sits between headline and lede, Rates prices to Montserrat (Fraunces top-heavy 8), crew copy (Elise + Beauregard), site-wide em-dash purge
 - [x] DNS cutover (2026-07-12): archerairboattours.com zone added to Bec's Cloudflare (free), all 15 records imported DNS-only **including the Microsoft 365 MX/SPF/autodiscover set — ask Bobby if he ever had an @archerairboattours.com mailbox; no active M365 product in the GoDaddy account, likely leftovers**. DNSSEC was off. NS swapped at GoDaddy → jean/rocky.ns.cloudflare.com, propagated in minutes. Old apex A records deleted; Workers custom domains attached (tours + plural, apex + www each)
 - [x] 301 redirect rule on archerairboats.com zone → tours (all requests, path + query preserved, verified live)
+- [x] archerairboat.com (singular) GoDaddy forwarding → tours: apex live by morning 2026-07-13, www confirmed by early afternoon. All six URLs (tours/plural/singular × apex/www) now land on https://archerairboattours.com. Note: GoDaddy's https forwarder answers 302 in practice despite the 301 setting — negligible for the singular (little SEO equity), revisit only if it bugs us
 
 - [x] Lane decision — Lane B: Astro + Keystatic on Cloudflare (2026-07-12, verified pricing/maintenance first)
 - [x] Scaffold `site/` — Astro 7 + Keystatic (dev-only admin), content schemas, homepage skeleton with verified facts
