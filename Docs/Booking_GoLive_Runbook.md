@@ -1,6 +1,8 @@
 # Booking System — Go-Live Runbook
 
-**State as of 2026-07-17:** everything is built, deployed, and dark. The database schema, RLS, seed data, booking engine, Edge Functions, SMS pipeline (simulated mode), and the operator PWA all exist and passed verification. Public online booking is OFF (`online_booking_enabled = false`) and the public API refuses bookings server-side.
+**State as of 2026-07-17 (end of day):** everything is built, deployed, dark, and now CONFIGURED. Parts 1A (Supabase auth — phone provider, OTP hook + secret, dev test login, Bec's operator profile), 1B (Turnstile — real keys both sides, verified), and 1C (first deploy: `https://archer-booking.zydydv9ntn.workers.dev`, all routes live) are DONE and verified. Public online booking is OFF (`online_booking_enabled = false`) and the public API refuses bookings server-side. Remaining: 1D Telnyx submission, 1E Bobby's numbers/prices, 1F full dress rehearsal (SMS half waits on Telnyx), custom domain when GoDaddy 2FA unblocks.
+
+> Dev login note: Supabase "test phone numbers" is configured with Bec's real mobile + a fixed private code (entry expires ~Aug 2 — reminder set). Step A4's `+15005550101` example is superseded; that user was created, verified, and deleted.
 
 This runbook is the ordered list of remaining human steps, split into what **Bec** does once, and the single step **Bobby & Elise** do when they're ready.
 

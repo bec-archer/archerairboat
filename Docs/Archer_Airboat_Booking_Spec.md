@@ -20,14 +20,14 @@ Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Asse
 
 ## Milestone: Foundation & Data Layer
 
-**Status:** in_progress
+**Status:** completed
 **Description:** Database schema, security, and phone-based auth that everything else builds on.
 
 ### Features
 
 - Supabase schema — bookings, customers, tour_types, availability_rules, blackout_dates, profiles tables; v3 added two-tier pricing (flat_rate_cents up to flat_rate_max_party, then per_person_cents) replacing base_price_cents
 - Row Level Security policies — operator-only read/write on bookings; anon has ZERO table access (v4/v6 removed the public insert path; all public traffic goes through the booking-api Edge Function)
-- Phone-number authentication — Supabase SMS OTP login for Bobby and Elise, no email required; login UI + send-otp-sms hook function deployed, dashboard config (enable provider, wire hook, test numbers, profiles) pending per Booking_GoLive_Runbook.md
+- Phone-number authentication — Supabase SMS OTP login for Bobby and Elise, no email required; login UI + send-otp-sms hook function deployed; dashboard config completed and verified end-to-end 2026-07-17 (phone provider on, hook wired + secret set, dev login via Bec's real number with a fixed test OTP)
 - Realtime on bookings — operator views update live when a booking changes
 - Seed data — tour types and Bobby's default weekly availability; Standard + Sunset tours seeded (couples $180 flat for 1-2, $65/person for 3-6, 90 min, max 6), 7 days 8am-4pm; solo price + Sunset details carry PLACEHOLDER flags pending Bobby
 
@@ -35,18 +35,19 @@ Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Asse
 
 ## Milestone: Operator PWA
 
-**Status:** in_progress
+**Status:** completed
 **Description:** The installable web app Bobby & Elise use to see and manage rides on any device.
 
 ### Features
 
 - Installable PWA shell — add-to-home-screen, service worker, app icon; Next.js static export, deployed via wrangler (worker: archer-booking)
-- Calendar view — month grid with per-day ride list, live via Realtime; refetches visible range on any change or reconnect
+- Calendar view — month grid with per-day ride list, live via Realtime; refetches visible range on any change or reconnect; days with rides get an orange highlight (sunset-100) with status dots underneath (added 2026-07-17)
 - Booking detail screen — the deep-link target opened from an SMS alert; path /a/?id=<uuid> (query param, stable forever, chosen for static-export compatibility)
 - Manual booking management — create, edit, confirm, and cancel a ride by hand
 - Today glance view — simplified read-only "today's rides" for Bobby, big type, tap-to-call customer
 - Offline read caching — today and upcoming rides viewable with no signal (Cache API snapshot, refetched and overwritten on reconnect)
-- Device recovery via OTP — new phone logs back in via SMS code with all data intact; works once auth config is done (see phone-number authentication)
+- Device recovery via OTP — new phone logs back in via SMS code with all data intact; verified working 2026-07-17 (auth config live; any browser + phone number + code = full app)
+- Days off calendar — Settings month-grid picker: tap a day to mark it off (orange), tap again to reopen; writes blackout_dates directly and replaces the one-date-at-a-time input, so a week out of town is seven quick taps (added 2026-07-17)
 
 ---
 
@@ -61,6 +62,7 @@ Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Asse
 - Availability display — open-slot picker driven by get_open_slots() SQL (availability rules minus bookings minus blackouts minus min-notice), 2-hour slot grid within Bobby's windows; returns nothing while the flag is off
 - Live online booking — customer books an open slot on /book/; create_online_booking() SQL enforces flag, capacity, overlap (advisory lock), notice, and horizon, then writes a confirmed booking that appears on the calendar instantly; customer gets a confirmation text
 - Go-live toggle — online_booking_enabled settings flag, big switch in the app's Settings screen; OFF shows call-first + request form, ON shows the live booker; flipping it is the entire go-live
+- Availability preview mode — second Elise-controlled flag (availability_display_enabled): while full booking is off, the website can show open times with "call to grab it" instead of hiding availability entirely; the warm-up rung between call-only and full online booking (requested by Bec 2026-07-17, not yet built)
 
 ---
 
@@ -111,4 +113,6 @@ Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Asse
 - **2026-07-17 — Slots every 2 hours** (8/10/12/2 within the 8am-4pm default window): 90-min ride + 30-min turnaround. Interval, notice (48h), horizon (90d), and windows all editable in settings.
 - **2026-07-17 — All business times in America/New_York**, computed server-side in SQL; slot math and SMS formatting both pin the zone explicitly.
 - **2026-07-17 — SMS consent copy** added under the phone field on both public forms (booking-related texts, STOP to opt out) to satisfy carrier opt-in requirements; the registration references it verbatim.
+- **2026-07-17 — Dev login = Bec's real number + fixed test OTP.** Supabase "test phone numbers" let any number log in with a fixed code and no SMS, so pre-Telnyx testing uses Bec's real mobile with a private code instead of the well-known 15005550101/123456 pair (which anyone could use; that user was deleted). The code lives only in the Supabase dashboard, never in the repo. When Telnyx goes live, delete the test entry and the same login starts receiving real OTP texts; the operator profile carries over.
+- **2026-07-17 — Turnstile hostnames: apex only, no wildcards.** Turnstile rejects wildcards; an apex hostname automatically covers all its subdomains. Widget covers archerairboattours.com, archerairboats.com, and the account workers.dev subdomain (temporary until app.archerairboattours.com is live, then remove).
 - **2026-07-17 — Toll-free instead of 10DLC.** The LLC's EIN is unknown and 10DLC brand registration requires one. Toll-free verification needs no EIN or tax ID (verified against Telnyx docs), has zero registration fees, and one 8XX number covers OTP + notifications + future inbound. Trade-off accepted: not a local 239 number. Fallback if verification stalls: sole-proprietor 10DLC under Bobby's personal name. Spec feature renamed from "Telnyx 10DLC registration" to "Telnyx toll-free registration".

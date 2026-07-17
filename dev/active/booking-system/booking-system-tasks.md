@@ -1,14 +1,24 @@
 # Booking System — Tasks
 
-**Last updated:** 2026-07-17 (session 3 — go-live-ready build)
+**Last updated:** 2026-07-17 (session 4 — runbook Part 1A-1C done, app live on workers.dev)
 
 ## In Progress
 
-- [ ] Bec setup checklist — `Docs/Booking_GoLive_Runbook.md` Part 1: Supabase auth config (phone provider, OTP hook, test numbers, operator profiles), Turnstile widget + secrets, first wrangler deploy, Telnyx registration
+- [ ] Telnyx toll-free registration — Bec submits per `Docs/Telnyx_Registration_Pack.md` (~5 business days; everything simulated meanwhile)
 - [ ] Confirm with Bobby: solo-rider price and Sunset Tour details (both seeded as flagged placeholders)
 - [ ] Get Bobby's + Elise's mobile numbers → profiles + `settings.notifications.operator_phones`
+- [ ] Dress rehearsal (runbook Part 1F) — partially done: Bec logged in, poked around, added a manual ride; SMS-side checks wait on Telnyx
+- [ ] ~Aug 2: test phone number entry expires — extend, or remove if Telnyx is live by then (reminder scheduled)
+- [ ] Availability preview mode — next feature up: migration (get_open_slots honors availability_display_enabled while create_online_booking stays locked), booking-api /config, /book/ third state, Settings warm-up option under the big switch
 
 ## Done
+
+- [x] Runbook Part 1A — Supabase auth config (2026-07-17): phone provider on, Send SMS hook wired to send-otp-sms + secret set, verified end-to-end from outside (OTP request → hook 200 → verify → session). Dev login = Bec's real number + fixed test OTP (dashboard-only, not in repo); well-known 15005550101 test user deleted; Bec has a manager profiles row and RLS reads confirmed working
+- [x] Runbook Part 1B — Turnstile (2026-07-17): widget live (Managed), hostnames archerairboattours.com + archerairboats.com + account workers.dev subdomain (no wildcards — Turnstile forbids them; apex covers subdomains). Real site key in app/.env.local + baked into deployed bundle; real secret in Edge Function secrets, verified (fake token → 403)
+- [x] Runbook Part 1C — first deploy (2026-07-17): https://archer-booking.zydydv9ntn.workers.dev — all routes 200, manifest + SW live, /book/ correctly call-first with flag off
+- [x] Calendar ride-day highlight (2026-07-17): days with rides shaded sunset-100 + bold, today = inset ring, dots keep status colors; sunset-100/600 added to palette
+- [x] Days off calendar (2026-07-17): Settings blackout picker is now a tap-to-toggle month grid (orange = off, past days disabled); reasons still shown/removable in a list below; tsc clean
+- [x] Supabase org mystery solved (2026-07-17): project lives in the slack-tide org on bec@slack-tide.dev (deliberate quota-sidestep account) — fine for free tier; transfer to an Archer-controlled org before any Pro upgrade. Project renamed to "Archer Airboat Tours" in dashboard
 
 - [x] System designed and speced — spec, TODO, and dev docs created
 - [x] Repo folder structure fixed — `Docs/` + `dev/active/booking-system/` match CLAUDE.md and `.slack-tide.json`

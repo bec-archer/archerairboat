@@ -15,7 +15,7 @@ last_updated: 2026-07-17
 
 - ✅ Supabase schema
 - ✅ Row Level Security policies
-- 🔧 Phone-number authentication — code + OTP hook deployed; dashboard config pending (runbook Part 1A)
+- ✅ Phone-number authentication — dashboard config done + verified end-to-end 2026-07-17 (provider, hook + secret, dev test login)
 - ✅ Realtime on bookings
 - ✅ Seed data — Standard + Sunset seeded; solo price + Sunset details are PLACEHOLDER pending Bobby
 
@@ -29,7 +29,8 @@ last_updated: 2026-07-17
 - ✅ Manual booking management
 - ✅ Today glance view
 - ✅ Offline read caching
-- 🔧 Device recovery via OTP — works the moment auth dashboard config is done
+- ✅ Device recovery via OTP — verified 2026-07-17; any device + phone number + code = full app
+- ✅ Days off calendar — tap-to-toggle month grid in Settings for out-of-town stretches (2026-07-17)
 
 ---
 
@@ -39,6 +40,7 @@ last_updated: 2026-07-17
 - ✅ Availability display
 - ✅ Live online booking — built + verified server-side; stays dark behind the flag
 - ✅ Go-live toggle
+- ⬜ Availability preview mode — show open times on the site with call-to-book; warm-up rung before full online booking
 
 ---
 

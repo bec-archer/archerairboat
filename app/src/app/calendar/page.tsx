@@ -74,18 +74,25 @@ export default function CalendarPage() {
           const rides = (byDay.get(day) ?? []).filter((b) => b.status !== 'cancelled');
           const isSel = day === selected;
           const isToday = day === todayKey;
+          const hasRides = rides.length > 0;
           return (
             <button
               key={i}
               onClick={() => setSelected(day)}
               className={`flex aspect-square flex-col items-center justify-center rounded-lg text-sm ${
-                isSel ? 'bg-marsh-700 text-white' : isToday ? 'bg-marsh-100' : 'bg-white'
-              }`}
+                isSel
+                  ? 'bg-marsh-700 text-white'
+                  : hasRides
+                  ? 'bg-sunset-100 font-semibold text-marsh-900'
+                  : isToday
+                  ? 'bg-marsh-100'
+                  : 'bg-white'
+              }${isToday && !isSel ? ' ring-2 ring-inset ring-marsh-600/40' : ''}`}
             >
               <span>{Number(day.slice(8))}</span>
               <span className="flex h-2 gap-0.5">
                 {rides.slice(0, 3).map((r) => (
-                  <span key={r.id} className={`h-1.5 w-1.5 rounded-full ${isSel ? 'bg-sand-500' : r.status === 'requested' ? 'bg-sunset-500' : 'bg-marsh-600'}`} />
+                  <span key={r.id} className={`h-1.5 w-1.5 rounded-full ${isSel ? 'bg-sand-500' : r.status === 'requested' ? 'bg-sunset-600' : 'bg-marsh-600'}`} />
                 ))}
               </span>
             </button>

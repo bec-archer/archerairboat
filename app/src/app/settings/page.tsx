@@ -1,11 +1,12 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import AppShell from '@/components/AppShell';
 import { useAuth } from '@/lib/auth';
 import { useAvailability, useRules, useTourTypes } from '@/lib/data';
 import { supabase } from '@/lib/supabase';
 import { formatUsd } from '@/lib/pricing';
+import { dayKey, monthGrid } from '@/lib/dates';
 import type { TourType } from '@/lib/types';
 
 const WEEKDAYS = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
@@ -171,7 +172,6 @@ function TourTypeEditor({ tour, onDone }: { tour: TourType; onDone: () => void }
 function AvailabilityCard() {
   const { availability, blackouts, refetch } = useAvailability();
   const [busy, setBusy] = useState(false);
-  const [newBlackout, setNewBlackout] = useState('');
 
   const updateRule = async (id: string, field: 'start_time' | 'end_time', value: string) => {
     setBusy(true);
@@ -191,15 +191,6 @@ function AvailabilityCard() {
   const addRule = async (weekday: number) => {
     setBusy(true);
     await supabase().from('availability_rules').insert({ weekday, start_time: '08:00', end_time: '16:00' });
-    setBusy(false);
-    refetch();
-  };
-
-  const addBlackout = async () => {
-    if (!newBlackout) return;
-    setBusy(true);
-    await supabase().from('blackout_dates').insert({ day: newBlackout });
-    setNewBlackout('');
     setBusy(false);
     refetch();
   };
@@ -245,21 +236,93 @@ function AvailabilityCard() {
       </div>
 
       <h3 className="mt-4 font-semibold">Days off</h3>
-      <div className="mt-1 space-y-1">
-        {blackouts.map((b) => (
-          <div key={b.id} className="flex items-center justify-between rounded-lg bg-marsh-50 px-3 py-2">
-            <span>{b.day}{b.reason ? ` — ${b.reason}` : ''}</span>
-            <button onClick={() => removeBlackout(b.id)} disabled={busy} className="text-sunset-500">✕</button>
-          </div>
-        ))}
-        <div className="flex gap-2 pt-1">
-          <input type="date" className={input} value={newBlackout} onChange={(e) => setNewBlackout(e.target.value)} />
-          <button onClick={addBlackout} disabled={busy || !newBlackout}
-            className="rounded-xl bg-marsh-100 px-4 font-semibold text-marsh-800 disabled:opacity-50">
-            Add
-          </button>
+      <p className="text-sm text-marsh-600">
+        Going out of town? Tap the days you&rsquo;ll be gone. Tap again to open a day back up.
+      </p>
+      <DaysOffCalendar blackouts={blackouts} busy={busy} setBusy={setBusy} refetch={refetch} />
+      {blackouts.some((b) => b.reason) && (
+        <div className="mt-2 space-y-1">
+          {blackouts.filter((b) => b.reason).map((b) => (
+            <div key={b.id} className="flex items-center justify-between rounded-lg bg-marsh-50 px-3 py-2 text-sm">
+              <span>{b.day} — {b.reason}</span>
+              <button onClick={() => removeBlackout(b.id)} disabled={busy} className="text-sunset-500">✕</button>
+            </div>
+          ))}
         </div>
+      )}
+    </div>
+  );
+}
+
+function DaysOffCalendar({ blackouts, busy, setBusy, refetch }: {
+  blackouts: { id: string; day: string; reason: string | null }[];
+  busy: boolean;
+  setBusy: (b: boolean) => void;
+  refetch: () => void;
+}) {
+  const now = new Date();
+  const [year, setYear] = useState(now.getFullYear());
+  const [month, setMonth] = useState(now.getMonth()); // 0-based
+  const cells = useMemo(() => monthGrid(year, month), [year, month]);
+  const offByDay = useMemo(() => new Map(blackouts.map((b) => [b.day, b])), [blackouts]);
+  const todayKey = dayKey(new Date());
+
+  const monthLabel = new Date(Date.UTC(year, month, 1, 12)).toLocaleDateString('en-US', {
+    month: 'long', year: 'numeric', timeZone: 'UTC',
+  });
+
+  const shiftMonth = (n: number) => {
+    const d = new Date(Date.UTC(year, month + n, 1, 12));
+    setYear(d.getUTCFullYear());
+    setMonth(d.getUTCMonth());
+  };
+
+  const toggleDay = async (day: string) => {
+    setBusy(true);
+    const existing = offByDay.get(day);
+    if (existing) {
+      await supabase().from('blackout_dates').delete().eq('id', existing.id);
+    } else {
+      await supabase().from('blackout_dates').insert({ day });
+    }
+    setBusy(false);
+    refetch();
+  };
+
+  return (
+    <div className="mt-2">
+      <div className="flex items-center justify-between">
+        <button onClick={() => shiftMonth(-1)} className="rounded-lg px-4 py-2 text-xl text-marsh-700">‹</button>
+        <div className="font-semibold">{monthLabel}</div>
+        <button onClick={() => shiftMonth(1)} className="rounded-lg px-4 py-2 text-xl text-marsh-700">›</button>
       </div>
+      <div className="grid grid-cols-7 text-center text-xs font-medium text-marsh-600/70">
+        {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((d, i) => <div key={i} className="py-1">{d}</div>)}
+      </div>
+      <div className="grid grid-cols-7 gap-1">
+        {cells.map((day, i) => {
+          if (!day) return <div key={i} />;
+          const isPast = day < todayKey;
+          const isOff = offByDay.has(day);
+          return (
+            <button
+              key={i}
+              onClick={() => toggleDay(day)}
+              disabled={busy || isPast}
+              className={`flex aspect-square items-center justify-center rounded-lg text-sm ${
+                isPast
+                  ? 'bg-transparent text-marsh-600/30'
+                  : isOff
+                  ? 'bg-sunset-500 font-semibold text-white'
+                  : 'bg-marsh-50'
+              }`}
+            >
+              <span>{Number(day.slice(8))}</span>
+            </button>
+          );
+        })}
+      </div>
+      <p className="mt-1 text-xs text-marsh-600/70">Orange days are off — online customers can&rsquo;t book them.</p>
     </div>
   );
 }

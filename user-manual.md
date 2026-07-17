@@ -18,8 +18,8 @@ Your whole schedule lives in the app at **app.archerairboattours.com**, it updat
 
 ## The Calendar tab
 
-- Dots on a day mean rides. Tap any day to see them listed with time, name, party size, and tour.
-- An orange dot is a ride that is not confirmed yet; blue means confirmed.
+- A day shaded orange has rides on it. Tap any day to see them listed with time, name, party size, and tour.
+- The little dots under the date show each ride: an orange dot is a ride that is not confirmed yet; blue means confirmed.
 - When Elise confirms or adds a ride, Bobby's screen updates by itself within a second or two. No refreshing.
 - **+ Add ride** puts a booking in by hand: name, phone, date, time, tour, number of guests. Same as writing it in the paper book, except the app also knows the price and texts you both.
 - No signal out on the water? The app still shows the last schedule it saw and tells you it's offline.
@@ -49,7 +49,7 @@ The text alerts include a link straight to that ride. Open it and you can:
 
 - **Online booking** — THE switch. See below.
 - **Tours & prices** — change names, prices, length, guest limits. Anything with a ⚠ is a number Bec had to guess at; fix it when you know the real answer.
-- **Days & hours** — which days you run and between what hours. Tap a closed day to open it, hit ✕ to close a day. Add **days off** for holidays, weather, doctor visits, whatever. Online customers can never book a closed day.
+- **Days & hours** — which days you run and between what hours. Tap a closed day to open it, hit ✕ to close a day. Below that, **Days off** is a little calendar: tap the days you'll be gone (vacation, holidays, weather, doctor) and they turn orange. Tap an orange day to open it back up. Online customers can never book a day off or a closed day.
 - **Online booking rules** — how much heads-up you need (starts at 48 hours) and how far ahead people can book (starts at 90 days).
 
 Every change here takes effect immediately, including on the public website.

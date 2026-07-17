@@ -37,6 +37,10 @@
 - **Don't enable real SMS before `app.archerairboattours.com` is live** — deep links in texts point there (`settings.notifications.app_base_url`).
 - **Realtime + offline cache can disagree** — hooks refetch the whole visible range on any event/reconnect instead of patching from payloads.
 - **iOS web push still limited** — not a blocker (operators on Android); nothing depends on push.
+- **Hook secret must be saved on the Edge Functions → Secrets page** — copying it from the Auth Hooks page does nothing by itself; without the secret the function 500s ("hook secret not configured") and auth surfaces it as "Unexpected status code returned from hook".
+- **Supabase test phone numbers bypass the Send SMS hook entirely** — fixed-OTP logins never exercise the hook; to test the hook itself, request an OTP for a non-test number (it logs [sms:SIMULATED] pre-Telnyx). The dashboard save button is easy to miss — if the side panel doesn't close, it didn't save.
+- **Turnstile: no wildcards, apex covers subdomains** — and never add bare `workers.dev` (that allowlists everyone's workers); use the account subdomain.
+- **Service worker updates need a full close + reopen** — a plain refresh keeps serving the old shell; tell whoever's testing "close every tab of it, open again, maybe twice".
 
 ## Dependencies
 
