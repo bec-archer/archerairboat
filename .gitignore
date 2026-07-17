@@ -5,6 +5,8 @@ dist/
 .env
 .env.*
 !.env.example
+# app/.env.local is committed on purpose: public values only (see app/.gitignore)
+!app/.env.local
 
 # Photoshop sources are too big for GitHub (100MB limit) — keep local only
 *.psd

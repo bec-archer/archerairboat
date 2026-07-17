@@ -1,0 +1,27 @@
+@import 'tailwindcss';
+
+@theme {
+  --color-marsh-50: #f2f8fa;
+  --color-marsh-100: #dcecf1;
+  --color-marsh-600: #1b6d8c;
+  --color-marsh-700: #14566f;
+  --color-marsh-800: #0e3d51;
+  --color-marsh-900: #0b2536;
+  --color-sand-100: #f7f1e3;
+  --color-sand-500: #d9b36a;
+  --color-sunset-500: #e8734a;
+}
+
+html {
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  @apply bg-marsh-50 text-marsh-900 antialiased;
+  font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Big-thumb-friendly targets: Bobby uses this on a phone on a boat. */
+button, a, input, select, textarea {
+  min-height: 44px;
+}

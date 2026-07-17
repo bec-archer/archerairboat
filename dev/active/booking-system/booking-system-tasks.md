@@ -1,34 +1,34 @@
 # Booking System — Tasks
 
-**Last updated:** 2026-07-12 (session 2)
+**Last updated:** 2026-07-17 (session 3 — go-live-ready build)
 
 ## In Progress
 
-- [ ] Confirm tour types / prices / durations / availability with Elise (next unblocked step — seed data waits on this)
+- [ ] Bec setup checklist — `Docs/Booking_GoLive_Runbook.md` Part 1: Supabase auth config (phone provider, OTP hook, test numbers, operator profiles), Turnstile widget + secrets, first wrangler deploy, Telnyx registration
+- [ ] Confirm with Bobby: solo-rider price and Sunset Tour details (both seeded as flagged placeholders)
+- [ ] Get Bobby's + Elise's mobile numbers → profiles + `settings.notifications.operator_phones`
 
 ## Done
 
 - [x] System designed and speced — spec, TODO, and dev docs created
-- [x] Repo folder structure fixed — `Docs/` + `dev/active/booking-system/` now match CLAUDE.md and `.slack-tide.json`
-- [x] Supabase project created — dedicated **Archer Supabase account** (free plan, $0, off the shop billing). Project URL: `https://htvtwuudbbclmxgpzmet.supabase.co`, connected via "Archer Airboats Supabase MCP"
-- [x] Initial schema + RLS migration written AND applied — `supabase/migrations/20260712000001_initial_schema.sql` (8 tables, operator RLS, anon insert-only booking_requests, Realtime on bookings, go-live flag seeded OFF)
-- [x] Function grant lockdown applied — `supabase/migrations/20260712000002_lock_down_function_grants.sql` (is_operator not callable by anon/PUBLIC)
-- [x] Security + performance advisors run — remaining warnings are intentional (public INSERT policy = the request form; authenticated exec on is_operator = needed for RLS)
-
-## Up Next
-
-- [ ] Decide Twilio approach (new campaign, same account) + kick off A2P 10DLC registration (lead time)
-- [ ] Wire phone OTP auth (Bobby + Elise profiles; own Twilio as SMS provider)
-- [ ] Scaffold Next.js PWA shell (manifest + service worker)
-- [ ] Calendar + booking detail views
-- [ ] `on-booking-created` Edge Function + database webhook + Twilio SMS
-- [ ] Public "Request a Ride" form → booking_requests
-- [ ] Go-live toggle in settings
+- [x] Repo folder structure fixed — `Docs/` + `dev/active/booking-system/` match CLAUDE.md and `.slack-tide.json`
+- [x] Supabase project created — dedicated Archer account (free plan), `https://htvtwuudbbclmxgpzmet.supabase.co`
+- [x] Initial schema + RLS + function-grant lockdown (migrations 1-2, session 2)
+- [x] SMS provider decision — **Telnyx** (not Twilio); research verified 2026-07-17; registration pack written (`Docs/Telnyx_Registration_Pack.md`)
+- [x] Migration v3 — two-tier pricing (couples flat / per-person), Standard + Sunset seed, 7-day 8am-4pm availability, booking_rules settings (48h notice / 90d horizon / 120min slots / America/New_York)
+- [x] Migration v4 — public booking engine: anon table access fully revoked; `get_open_slots`, `price_for`, `create_online_booking` (advisory-lock race safety, flag enforced in SQL)
+- [x] Migration v5 — pg_net triggers → notify-booking; pg_cron `archer-morning-reminders` @ 11:00 UTC
+- [x] Migration v6 — advisor cleanup (dropped legacy public-insert policy, revoked authenticated execute on internal functions)
+- [x] Edge Functions deployed — `booking-api` (Turnstile + rate limits), `notify-booking`, `morning-reminders`, `send-otp-sms` (auth hook); all SMS in simulated/log mode until Telnyx creds
+- [x] Operator PWA built — Next.js 15 static export in `app/`: login (OTP), calendar (Realtime), today glance, booking detail (`/a/?id=`), manual create/edit, requests inbox, settings (tours/hours/rules/go-live toggle), offline snapshot, service worker, manifest, icons; production build passes
+- [x] Public pages built — `/request/` + `/book/` with Turnstile and SMS consent copy; flag-off shows call-first
+- [x] Verification pass — flag OFF confirmed; anon PostgREST access 401s; bookings without Turnstile 403; slot engine returns correct ET slots (8/10/12/2); full booking round-trip tested with flag temporarily on (pricing correct: $180 couple / $260 x4), test data purged; notify pipeline fired on INSERT + confirm; morning-reminders runs; security advisors clean (only intentional `is_operator`)
 
 ## Blocked / Parked
 
-- [ ] Live online booking (Phase 2) — parked until Bobby & Elise are ready to flip the go-live flag
+- [ ] Live online booking go-live — parked ON PURPOSE until Bobby & Elise flip the flag (their call, not a task)
+- [ ] Telnyx 10DLC approval — 1-3 week carrier lead time after Bec submits
+- [ ] `app.archerairboattours.com` custom domain — blocked by GoDaddy 2FA / DNS move; deploy to workers.dev meanwhile; NO real SMS sends before the domain is live (deep links point at it)
 - [ ] Reply-to-confirm inbound SMS — v2, after core ships
-- [ ] Twilio A2P 10DLC approval — blocked by: carrier registration lead time (start early)
-- [ ] Free-tier caveat at launch: free projects pause after 1 week of inactivity — revisit plan tier (or add keep-alive traffic) before real customers depend on it
-- [ ] Swap Archer Supabase account email to a proper @archerairboattours.com address once DNS moves to Cloudflare
+- [ ] Supabase free-tier pause — decide Pro upgrade (~$10/mo, Archer's own billing) vs keep-alive BEFORE real customers depend on it (runbook Part 1A-6)
+- [ ] Swap Archer Supabase + Telnyx account emails to @archerairboattours.com once DNS moves

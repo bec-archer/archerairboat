@@ -1,0 +1,14 @@
+{
+  // Archer Airboat Tours — operator PWA + public booking pages
+  // Static-export Next.js served via Cloudflare Workers Static Assets.
+  // Deploy (from Bec's Terminal): npm run deploy
+  // Temp URL until DNS moves: archer-booking.<account>.workers.dev
+  // Forever home once tours-domain DNS is on Cloudflare: app.archerairboattours.com
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "archer-booking",
+  "compatibility_date": "2026-07-01",
+  "assets": {
+    "directory": "./out",
+    "not_found_handling": "404-page"
+  }
+}

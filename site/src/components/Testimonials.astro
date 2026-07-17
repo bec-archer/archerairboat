@@ -65,18 +65,58 @@ const testimonials = await Promise.all(
 }
 
 <script>
-  // Progressive enhancement: the track scrolls and snaps fine on its own;
-  // buttons are only revealed when JS is around to power them.
+  // Progressive enhancement: without JS this is a plain scrollable strip of
+  // the six cards and the nav stays hidden. With JS we clone one full set on
+  // each side, start in the middle set, and silently rebase scrollLeft by one
+  // set-width whenever the user drifts near either cloned end. Result: the
+  // carousel cycles endlessly in both directions with no visible seam.
   document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
     const track = root.querySelector<HTMLElement>('[data-track]');
     const nav = root.querySelector<HTMLElement>('[data-nav]');
     if (!track || !nav) return;
+
+    const originals = Array.from(track.children) as HTMLElement[];
+    if (originals.length > 1) {
+      const clone = () =>
+        originals.map((c) => {
+          const copy = c.cloneNode(true) as HTMLElement;
+          copy.setAttribute('aria-hidden', 'true');
+          return copy;
+        });
+      track.prepend(...clone());
+      track.append(...clone());
+    }
     nav.hidden = false;
+
+    const first = () => track.children[originals.length] as HTMLElement;
+    // Distance between set N and set N+1 = width of one full set incl. gaps
+    const setWidth = () => first().offsetLeft - (track.children[0] as HTMLElement).offsetLeft;
+    const center = (el: HTMLElement) => el.offsetLeft - (track.clientWidth - el.offsetWidth) / 2;
+
+    // Start centered on the middle set
+    track.scrollLeft = center(first());
+
+    const rebase = () => {
+      const w = setWidth();
+      if (w <= 0) return;
+      if (track.scrollLeft < w * 0.5) track.scrollLeft += w;
+      else if (track.scrollLeft >= w * 1.5) track.scrollLeft -= w;
+    };
+    let settle: ReturnType<typeof setTimeout>;
+    track.addEventListener(
+      'scroll',
+      () => {
+        clearTimeout(settle);
+        settle = setTimeout(rebase, 140);
+      },
+      { passive: true }
+    );
 
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
     const step = () => {
-      const card = track.querySelector<HTMLElement>('.card');
-      return card ? card.offsetWidth : track.clientWidth;
+      const a = track.children[0] as HTMLElement;
+      const b = track.children[1] as HTMLElement;
+      return b ? b.offsetLeft - a.offsetLeft : track.clientWidth;
     };
     const go = (dir: number) =>
       track.scrollBy({
@@ -129,20 +169,16 @@ const testimonials = await Promise.all(
     gap: 1.25rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    /* Contained in the same 72rem column as the heading. A viewport-edge
-       bleed looked broken on wide screens (cards ran to the glass while the
-       heading stayed centered), so the scrollport clips at the column edge
-       and the cut-off next card is the scroll affordance. */
-    max-width: 72rem;
-    margin: 0 auto;
-    padding: 0.5rem 1.25rem 1.5rem;
-    scroll-padding-inline: 1.25rem;
+    /* Full-bleed endless loop (Bec, 2026-07-17): cards run past BOTH viewport
+       edges symmetrically (center snap), which reads as intentional at any
+       width. A one-sided bleed looked broken on wide screens. */
+    padding: 0.5rem 0.625rem 1.5rem;
     scrollbar-width: none;
   }
   .track::-webkit-scrollbar { display: none; }
   .track:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
 
-  .card { scroll-snap-align: start; display: flex; }
+  .card { scroll-snap-align: center; display: flex; }
   figure {
     background: var(--shell);
     border-radius: var(--radius-lg);
@@ -177,9 +213,7 @@ const testimonials = await Promise.all(
   .nav {
     display: flex;
     gap: 0.6rem;
-    justify-content: flex-end;
-    max-width: 72rem;
-    margin: 0 auto;
+    justify-content: center;
     padding: 0 1.25rem;
   }
   .nav button {

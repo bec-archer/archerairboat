@@ -14,7 +14,7 @@ A Supabase-backed booking + scheduling system for Archer Airboat Tours (Capt. Bo
 - **Elise controls go-live.** Everything gets built, then Bobby & Elise are shown how it works. Public online booking only switches on when *they* decide they're ready — via a feature flag, not a redeploy. Bobby's paper calendar book stays; this is a convenience layer, not a forced replacement.
 - **Text-native notifications.** New bookings alert Bobby + Elise by SMS with a deep link straight to the ride on the calendar.
 
-Reuses patterns Bec already runs: Supabase Edge Functions + webhooks (job-scraper pattern), Resend, Twilio A2P 10DLC (QRSTKR), ntfy.sh (Bec & Call). Stack: React/Next.js PWA + Supabase (Postgres, Auth, Realtime, Edge Functions).
+Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Assets + Supabase (Postgres, Auth, Realtime, Edge Functions) + Telnyx SMS + Cloudflare Turnstile. Deployed dark: everything live, public booking gated behind the `online_booking_enabled` flag (currently OFF).
 
 ---
 
@@ -25,57 +25,57 @@ Reuses patterns Bec already runs: Supabase Edge Functions + webhooks (job-scrape
 
 ### Features
 
-- Supabase schema — bookings, customers, tour_types, availability_rules, blackout_dates, profiles tables
-- Row Level Security policies — operator-only read/write on bookings; public insert-only on booking_requests
-- Phone-number authentication — Supabase SMS OTP login for Bobby and Elise, no email required
+- Supabase schema — bookings, customers, tour_types, availability_rules, blackout_dates, profiles tables; v3 added two-tier pricing (flat_rate_cents up to flat_rate_max_party, then per_person_cents) replacing base_price_cents
+- Row Level Security policies — operator-only read/write on bookings; anon has ZERO table access (v4/v6 removed the public insert path; all public traffic goes through the booking-api Edge Function)
+- Phone-number authentication — Supabase SMS OTP login for Bobby and Elise, no email required; login UI + send-otp-sms hook function deployed, dashboard config (enable provider, wire hook, test numbers, profiles) pending per Booking_GoLive_Runbook.md
 - Realtime on bookings — operator views update live when a booking changes
-- Seed data — tour types and Bobby's default weekly availability
+- Seed data — tour types and Bobby's default weekly availability; Standard + Sunset tours seeded (couples $180 flat for 1-2, $65/person for 3-6, 90 min, max 6), 7 days 8am-4pm; solo price + Sunset details carry PLACEHOLDER flags pending Bobby
 
 ---
 
 ## Milestone: Operator PWA
 
-**Status:** planned
+**Status:** in_progress
 **Description:** The installable web app Bobby & Elise use to see and manage rides on any device.
 
 ### Features
 
-- Installable PWA shell — add-to-home-screen, service worker, app icon
-- Calendar view — month/week/day view of confirmed rides and pending requests
-- Booking detail screen — the deep-link target opened from an SMS alert
+- Installable PWA shell — add-to-home-screen, service worker, app icon; Next.js static export, deployed via wrangler (worker: archer-booking)
+- Calendar view — month grid with per-day ride list, live via Realtime; refetches visible range on any change or reconnect
+- Booking detail screen — the deep-link target opened from an SMS alert; path /a/?id=<uuid> (query param, stable forever, chosen for static-export compatibility)
 - Manual booking management — create, edit, confirm, and cancel a ride by hand
-- Today glance view — simplified read-only "today's rides" for Bobby
-- Offline read caching — today and upcoming rides viewable with no signal
-- Device recovery via OTP — new phone logs back in via SMS code with all data intact
+- Today glance view — simplified read-only "today's rides" for Bobby, big type, tap-to-call customer
+- Offline read caching — today and upcoming rides viewable with no signal (Cache API snapshot, refetched and overwritten on reconnect)
+- Device recovery via OTP — new phone logs back in via SMS code with all data intact; works once auth config is done (see phone-number authentication)
 
 ---
 
 ## Milestone: Public Requests & Booking
 
-**Status:** planned
-**Description:** The customer-facing request form now, and true online booking gated behind an Elise-controlled switch.
+**Status:** in_progress
+**Description:** The customer-facing request form now, and true online booking gated behind an Elise-controlled switch. All public traffic goes through the booking-api Edge Function with Cloudflare Turnstile verification and rate limiting; the go-live flag is enforced server-side in SQL. Milestone completes after Turnstile widget config + dress rehearsal (runbook Part 1F).
 
 ### Features
 
-- Request a Ride form — public website form writing to booking_requests (call-first phase)
-- Availability display — public "here's Bobby's availability" view
-- Live online booking — customer books an open slot, writes a confirmed booking that appears on the calendar instantly
-- Go-live toggle — feature flag Bobby & Elise control to turn public online booking on or off
+- Request a Ride form — public /request/ page (name, phone, preferred date/time, party size, notes) writing to booking_requests via Edge Function; Turnstile-verified, rate-limited (3/day per phone, 10/hour per IP); operators triage in the Requests inbox (called them / book it / close)
+- Availability display — open-slot picker driven by get_open_slots() SQL (availability rules minus bookings minus blackouts minus min-notice), 2-hour slot grid within Bobby's windows; returns nothing while the flag is off
+- Live online booking — customer books an open slot on /book/; create_online_booking() SQL enforces flag, capacity, overlap (advisory lock), notice, and horizon, then writes a confirmed booking that appears on the calendar instantly; customer gets a confirmation text
+- Go-live toggle — online_booking_enabled settings flag, big switch in the app's Settings screen; OFF shows call-first + request form, ON shows the live booker; flipping it is the entire go-live
 
 ---
 
 ## Milestone: Notifications
 
-**Status:** planned
-**Description:** SMS alerts to operators and customers, driven by database events.
+**Status:** in_progress
+**Description:** SMS alerts to operators and customers, driven by database events. Telnyx is the provider (decision 2026-07-17, replacing the original Twilio plan); until Telnyx creds are set, all sends run in simulated/log mode. Operator numbers + deep-link base URL are editable in settings (key: notifications) without redeploying.
 
 ### Features
 
-- Booking-created webhook — Supabase database webhook on new booking fires an Edge Function
-- Operator SMS alert — Twilio SMS to Bobby and Elise with ride details and a deep link to the calendar
-- Customer confirmation SMS — text to the customer when their ride is confirmed
-- Morning-of reminder SMS — scheduled reminder the day of the ride to cut no-shows
-- Twilio A2P 10DLC registration — dedicated brand and campaign for Archer Airboat Tours
+- Booking-created webhook — pg_net trigger on bookings INSERT/status-UPDATE and booking_requests INSERT fires the notify-booking Edge Function (verified end-to-end 2026-07-17)
+- Operator SMS alert — text to Bobby and Elise with ride details, price, source, and a deep link to the ride (app.archerairboattours.com/a/?id=...)
+- Customer confirmation SMS — text to the customer when their ride is confirmed (online bookings confirm instantly; manual requested->confirmed also triggers)
+- Morning-of reminder SMS — pg_cron (archer-morning-reminders, 11:00 UTC daily) hits the morning-reminders function; reminds each customer + sends operators a day summary
+- Telnyx 10DLC registration — dedicated brand and campaign for Archer Airboat Tours under the ARCHERAIRBOATTOURS LLC; registration pack prepped (Docs/Telnyx_Registration_Pack.md), Bec submits; ~$2.50/mo + ~$0.007/msg
 
 ---
 
@@ -92,9 +92,22 @@ Reuses patterns Bec already runs: Supabase Edge Functions + webhooks (job-scrape
 
 ## Out of Scope
 
-- Online payment and deposits — call-first for now; payment is a later phase
+- Online payment and deposits — call-first for now; payment is a later phase (price is quoted and shown as "due at the dock")
 - Native iOS or Android apps — PWA covers both platforms, no app-store builds
 - Multi-boat or multi-captain scheduling — single operator (Bobby) only
 - Peace River / fossil-trip booking — Archer is concentrating on Matlacha tours only
 - Customer accounts and login — customers book without creating an account
 - Email notifications — SMS only, since there may be no email for Bobby or Elise
+
+---
+
+## Decision Log
+
+- **2026-07-17 — Telnyx over Twilio.** Bec preferred a non-Twilio provider. Research (verified against current pricing/docs): US carrier registration is unavoidable with every provider; Telnyx covers OTP (via Supabase Send SMS hook) + notifications + future inbound on one local 239 number for ~$4-7/mo all-in, cheaper than Twilio with passthrough-only 10DLC fees. Spec feature renamed from "Twilio A2P 10DLC registration" to "Telnyx 10DLC registration".
+- **2026-07-17 — Static-export Next.js on Cloudflare Workers Static Assets** (not OpenNext SSR). App is fully client-side + Supabase; static export gives the same wrangler deploy story as the Astro site, zero server bundle, unlimited free asset requests. Server-ish endpoints live in Supabase Edge Functions. OpenNext remains the escape hatch if SSR is ever needed.
+- **2026-07-17 — Zero anon table access; Edge Function as the only public door.** Original design had anon INSERT on booking_requests; replaced so Cloudflare Turnstile (server-side verification) + rate limits can't be bypassed by hitting PostgREST directly. Public reads/writes go through booking-api which calls SECURITY DEFINER SQL functions that enforce every rule (flag, capacity, overlap via advisory lock, notice, horizon).
+- **2026-07-17 — Deep link is /a/?id=<uuid>** (query param, not /a/[id] path) because static export can't prerender unknown dynamic segments. Goes in every SMS; never change it.
+- **2026-07-17 — Pricing model:** flat rate for small parties + per-person above (Standard: $180 flat 1-2, $65pp 3-6). Solo-rider price and all Sunset Tour details are UNCONFIRMED placeholders flagged in tour_types.internal_notes; confirm with Bobby before go-live.
+- **2026-07-17 — Slots every 2 hours** (8/10/12/2 within the 8am-4pm default window): 90-min ride + 30-min turnaround. Interval, notice (48h), horizon (90d), and windows all editable in settings.
+- **2026-07-17 — All business times in America/New_York**, computed server-side in SQL; slot math and SMS formatting both pin the zone explicitly.
+- **2026-07-17 — SMS consent copy** added under the phone field on both public forms (booking-related texts, STOP to opt out) to satisfy 10DLC opt-in requirements; the campaign registration references it verbatim.

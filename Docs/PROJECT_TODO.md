@@ -1,6 +1,6 @@
 ---
 project: archer-airboat
-last_updated: 2026-07-12
+last_updated: 2026-07-17
 ---
 
 # Archer Airboat Tours — Project TODO
@@ -15,40 +15,40 @@ last_updated: 2026-07-12
 
 - ✅ Supabase schema
 - ✅ Row Level Security policies
-- ⬜ Phone-number authentication
+- 🔧 Phone-number authentication — code + OTP hook deployed; dashboard config pending (runbook Part 1A)
 - ✅ Realtime on bookings
-- ⬜ Seed data
+- ✅ Seed data — Standard + Sunset seeded; solo price + Sunset details are PLACEHOLDER pending Bobby
 
 ---
 
 ## Operator PWA
 
-- ⬜ Installable PWA shell
-- ⬜ Calendar view
-- ⬜ Booking detail screen
-- ⬜ Manual booking management
-- ⬜ Today glance view
-- ⬜ Offline read caching
-- ⬜ Device recovery via OTP
+- ✅ Installable PWA shell
+- ✅ Calendar view
+- ✅ Booking detail screen
+- ✅ Manual booking management
+- ✅ Today glance view
+- ✅ Offline read caching
+- 🔧 Device recovery via OTP — works the moment auth dashboard config is done
 
 ---
 
 ## Public Requests & Booking
 
-- ⬜ Request a Ride form
-- ⬜ Availability display
-- ⬜ Live online booking
-- ⬜ Go-live toggle
+- ✅ Request a Ride form
+- ✅ Availability display
+- ✅ Live online booking — built + verified server-side; stays dark behind the flag
+- ✅ Go-live toggle
 
 ---
 
 ## Notifications
 
-- ⬜ Booking-created webhook
-- ⬜ Operator SMS alert
-- ⬜ Customer confirmation SMS
-- ⬜ Morning-of reminder SMS
-- ⬜ Twilio A2P 10DLC registration
+- ✅ Booking-created webhook
+- ✅ Operator SMS alert — simulated mode until Telnyx creds set
+- ✅ Customer confirmation SMS — simulated mode until Telnyx creds set
+- ✅ Morning-of reminder SMS — cron scheduled 11:00 UTC daily; verified run
+- ⬜ Telnyx 10DLC registration — pack prepped (Docs/Telnyx_Registration_Pack.md); Bec submits; 1-3 wk carrier approval
 
 ---
 
@@ -62,4 +62,4 @@ last_updated: 2026-07-12
 
 > Items moved in from Out of Scope — each entry triggers a scope_log event
 
-_(none yet)_
+- 2026-07-17: "Twilio A2P 10DLC registration" renamed to "Telnyx 10DLC registration" (provider decision, see spec Decision Log; not an out-of-scope move, recorded here so the sync rename is documented)
