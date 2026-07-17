@@ -14,7 +14,7 @@
 - [x] Repo folder structure fixed — `Docs/` + `dev/active/booking-system/` match CLAUDE.md and `.slack-tide.json`
 - [x] Supabase project created — dedicated Archer account (free plan), `https://htvtwuudbbclmxgpzmet.supabase.co`
 - [x] Initial schema + RLS + function-grant lockdown (migrations 1-2, session 2)
-- [x] SMS provider decision — **Telnyx** (not Twilio); research verified 2026-07-17; registration pack written (`Docs/Telnyx_Registration_Pack.md`)
+- [x] SMS provider decision — **Telnyx toll-free** (not Twilio, not 10DLC): no EIN required, free verification, one 8XX number for everything; research verified 2026-07-17; registration pack written (`Docs/Telnyx_Registration_Pack.md`)
 - [x] Migration v3 — two-tier pricing (couples flat / per-person), Standard + Sunset seed, 7-day 8am-4pm availability, booking_rules settings (48h notice / 90d horizon / 120min slots / America/New_York)
 - [x] Migration v4 — public booking engine: anon table access fully revoked; `get_open_slots`, `price_for`, `create_online_booking` (advisory-lock race safety, flag enforced in SQL)
 - [x] Migration v5 — pg_net triggers → notify-booking; pg_cron `archer-morning-reminders` @ 11:00 UTC
@@ -27,7 +27,7 @@
 ## Blocked / Parked
 
 - [ ] Live online booking go-live — parked ON PURPOSE until Bobby & Elise flip the flag (their call, not a task)
-- [ ] Telnyx 10DLC approval — 1-3 week carrier lead time after Bec submits
+- [ ] Telnyx toll-free verification — ~5 business days after Bec submits (no sends possible until approved; simulated mode covers meanwhile)
 - [ ] `app.archerairboattours.com` custom domain — blocked by GoDaddy 2FA / DNS move; deploy to workers.dev meanwhile; NO real SMS sends before the domain is live (deep links point at it)
 - [ ] Reply-to-confirm inbound SMS — v2, after core ships
 - [ ] Supabase free-tier pause — decide Pro upgrade (~$10/mo, Archer's own billing) vs keep-alive BEFORE real customers depend on it (runbook Part 1A-6)

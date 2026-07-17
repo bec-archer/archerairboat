@@ -48,7 +48,7 @@ last_updated: 2026-07-17
 - ✅ Operator SMS alert — simulated mode until Telnyx creds set
 - ✅ Customer confirmation SMS — simulated mode until Telnyx creds set
 - ✅ Morning-of reminder SMS — cron scheduled 11:00 UTC daily; verified run
-- ⬜ Telnyx 10DLC registration — pack prepped (Docs/Telnyx_Registration_Pack.md); Bec submits; 1-3 wk carrier approval
+- ⬜ Telnyx toll-free registration — pack prepped (Docs/Telnyx_Registration_Pack.md); Bec submits; no EIN needed; ~5 business day approval
 
 ---
 
@@ -62,4 +62,4 @@ last_updated: 2026-07-17
 
 > Items moved in from Out of Scope — each entry triggers a scope_log event
 
-- 2026-07-17: "Twilio A2P 10DLC registration" renamed to "Telnyx 10DLC registration" (provider decision, see spec Decision Log; not an out-of-scope move, recorded here so the sync rename is documented)
+- 2026-07-17: "Twilio A2P 10DLC registration" renamed to "Telnyx 10DLC registration" (provider decision), then same day to "Telnyx toll-free registration" (no-EIN path; see spec Decision Log; not out-of-scope moves, recorded so the sync renames are documented)

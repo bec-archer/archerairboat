@@ -19,7 +19,7 @@
 
 (Authoritative list with dates: spec Decision Log. Highlights:)
 
-- **Telnyx over Twilio** — one vendor for OTP hook + notifications + future inbound; ~$4-7/mo; carrier registration unavoidable with any provider.
+- **Telnyx over Twilio, toll-free over 10DLC** — one vendor for OTP hook + notifications + future inbound; carrier registration unavoidable with any provider, but toll-free verification needs no EIN (LLC's EIN unknown) and has zero registration fees; ~$2-4/mo all-in.
 - **Static export on Workers Static Assets, not OpenNext** — app is client-side + Supabase; same wrangler flow as the Astro site; Edge Functions are the server layer.
 - **Zero anon table access** — booking-api Edge Function is the only public door; Turnstile verified server-side; rules enforced in SECURITY DEFINER SQL (`get_open_slots`, `create_online_booking` with advisory lock).
 - **Deep link `/a/?id=`** — static export can't do dynamic path segments.
@@ -41,6 +41,6 @@
 ## Dependencies
 
 - Supabase (Archer's own free account — NOT the SR80 org; see billing-boundaries memory)
-- Telnyx (account not yet created — Bec, see registration pack; EIN needed from Bobby)
+- Telnyx (account not yet created — Bec, see registration pack; toll-free path, NO EIN needed)
 - Cloudflare (Workers deploy from Bec's Mac; Turnstile widget pending; tours-domain DNS still hostage to GoDaddy 2FA)
 - Real data still owed by Bobby: solo price, Sunset details, his + Elise's mobile numbers

@@ -75,7 +75,7 @@ Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Asse
 - Operator SMS alert — text to Bobby and Elise with ride details, price, source, and a deep link to the ride (app.archerairboattours.com/a/?id=...)
 - Customer confirmation SMS — text to the customer when their ride is confirmed (online bookings confirm instantly; manual requested->confirmed also triggers)
 - Morning-of reminder SMS — pg_cron (archer-morning-reminders, 11:00 UTC daily) hits the morning-reminders function; reminds each customer + sends operators a day summary
-- Telnyx 10DLC registration — dedicated brand and campaign for Archer Airboat Tours under the ARCHERAIRBOATTOURS LLC; registration pack prepped (Docs/Telnyx_Registration_Pack.md), Bec submits; ~$2.50/mo + ~$0.007/msg
+- Telnyx toll-free registration — toll-free verification for an 8XX sending number (no EIN or TCR fees required); registration pack prepped (Docs/Telnyx_Registration_Pack.md), Bec submits; ~$1-2/mo + ~$0.006/msg, approval ~5 business days
 
 ---
 
@@ -110,4 +110,5 @@ Stack (as built): Next.js 15 static-export PWA on Cloudflare Workers Static Asse
 - **2026-07-17 — Pricing model:** flat rate for small parties + per-person above (Standard: $180 flat 1-2, $65pp 3-6). Solo-rider price and all Sunset Tour details are UNCONFIRMED placeholders flagged in tour_types.internal_notes; confirm with Bobby before go-live.
 - **2026-07-17 — Slots every 2 hours** (8/10/12/2 within the 8am-4pm default window): 90-min ride + 30-min turnaround. Interval, notice (48h), horizon (90d), and windows all editable in settings.
 - **2026-07-17 — All business times in America/New_York**, computed server-side in SQL; slot math and SMS formatting both pin the zone explicitly.
-- **2026-07-17 — SMS consent copy** added under the phone field on both public forms (booking-related texts, STOP to opt out) to satisfy 10DLC opt-in requirements; the campaign registration references it verbatim.
+- **2026-07-17 — SMS consent copy** added under the phone field on both public forms (booking-related texts, STOP to opt out) to satisfy carrier opt-in requirements; the registration references it verbatim.
+- **2026-07-17 — Toll-free instead of 10DLC.** The LLC's EIN is unknown and 10DLC brand registration requires one. Toll-free verification needs no EIN or tax ID (verified against Telnyx docs), has zero registration fees, and one 8XX number covers OTP + notifications + future inbound. Trade-off accepted: not a local 239 number. Fallback if verification stalls: sole-proprietor 10DLC under Bobby's personal name. Spec feature renamed from "Telnyx 10DLC registration" to "Telnyx toll-free registration".
