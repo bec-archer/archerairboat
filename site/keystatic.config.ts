@@ -58,7 +58,19 @@ export default config({
       format: { contentField: 'quote' },
       schema: {
         author: fields.slug({ name: { label: 'Author' } }),
-        source: fields.text({ label: 'Source (e.g. TripAdvisor)' }),
+        source: fields.text({ label: 'Source (e.g. Tripadvisor)' }),
+        location: fields.text({
+          label: 'Location',
+          description: 'Reviewer hometown as shown on the review, e.g. "Minneapolis, Minnesota". Optional.',
+        }),
+        date: fields.text({
+          label: 'Review date',
+          description: 'Month and year of the visit, e.g. "February 2024". Optional.',
+        }),
+        order: fields.integer({
+          label: 'Display order',
+          description: 'Lower numbers show first in the carousel. Optional.',
+        }),
         quote: fields.markdoc({ label: 'Quote' }),
       },
     }),

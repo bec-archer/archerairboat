@@ -17,6 +17,9 @@ const testimonials = defineCollection({
   schema: z.object({
     author: z.string(),
     source: z.string().optional(),
+    location: z.string().optional(),
+    date: z.string().optional(),
+    order: z.number().int().optional(),
   }),
 });
 

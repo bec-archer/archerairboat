@@ -1,6 +1,6 @@
 # Site Rebuild — Tasks
 
-**Last updated:** 2026-07-12 (session 3, GO LIVE: hero/rates/mobile + domain cutover)
+**Last updated:** 2026-07-17 (session 4, testimonials carousel)
 
 ## In Progress
 
@@ -8,6 +8,7 @@
 
 ## Done
 
+- [x] **Testimonials carousel** (2026-07-17): 6 hand-picked Tripadvisor quotes (chosen with Bec from all 41 reviews, incl. the Elise + Bo "co-captains" one) seeded as `content/testimonials/*.mdoc`. Schema extended with location/date/order in both `content.config.ts` and `keystatic.config.ts` (exact-match field names). New `Testimonials.astro`: CSS scroll-snap carousel, JS-optional prev/next buttons, reduced-motion aware, 5.0 badge linking to the Tripadvisor listing; placed between video and Rates. Hero badge updated to "40+ reviews" (was hardcoded 40, count is now 41 and will drift). Quote text verbatim except light trims and small typo fixes; attribution matches the posted reviews. Build green; desktop + mobile screenshots verified; nav buttons tested via Playwright. Also: `package-lock.json` refreshed (playwright devDep was never in the lock, `npm ci` failed on it; diff is additive only).
 - [x] **SITE IS LIVE at https://archerairboattours.com** (2026-07-12) — apex + www, indexable, canonical correct. Bobby & Elise gave the all-clear on the staging build first.
 - [x] First push to GitHub (bec-archer/archerairboat) + staging deploy to archerairboats.com → link sent to Bobby & Elise. Pre-push fix: `images/flats-hero.psd` (156MB, over GitHub's 100MB limit) stripped from history via amend; `*.psd` gitignored; local branch `backup-pre-psd-strip` holds the old history (never push it)
 - [x] Mobile polish round (2026-07-12, from Bec's phone review): header overflow fix (no h-scroll 320–430px), hero reframed so the boat sits between headline and lede, Rates prices to Montserrat (Fraunces top-heavy 8), crew copy (Elise + Beauregard), site-wide em-dash purge

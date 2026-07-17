@@ -1,0 +1,199 @@
+---
+import { getCollection, render } from 'astro:content';
+
+// Quotes are real Tripadvisor reviews, hand-picked with Bec 2026-07-17.
+// Text is verbatim except light trims (marked in the source review) and
+// typo fixes. Do NOT invent or embellish reviews; add new ones via
+// Keystatic (Testimonials collection) with author/date exactly as posted.
+const TRIPADVISOR_URL =
+  'https://www.tripadvisor.com/Attraction_Review-g34427-d3815798-Reviews-Archer_Airboat_Tours-Matlacha_Florida.html';
+
+const entries = (await getCollection('testimonials')).sort(
+  (a, b) => (a.data.order ?? 99) - (b.data.order ?? 99)
+);
+const testimonials = await Promise.all(
+  entries.map(async (entry) => ({
+    data: entry.data,
+    Content: (await render(entry)).Content,
+  }))
+);
+---
+
+{
+  testimonials.length > 0 && (
+    <section class="testimonials" aria-label="Guest reviews">
+      <div class="inner">
+        <div class="heading">
+          <h2>Guests keep saying it best</h2>
+          <a class="badge" href={TRIPADVISOR_URL} target="_blank" rel="noopener">
+            <span class="stars" aria-hidden="true">
+              ★★★★★
+            </span>
+            5.0 on Tripadvisor · 40+ reviews
+          </a>
+        </div>
+      </div>
+      {/* Carousel sits outside .inner so cards can bleed to the viewport edge;
+          the track's own padding re-aligns the first card with the column. */}
+      <div class="carousel" data-carousel>
+          <ul class="track" data-track tabindex="0">
+            {testimonials.map(({ data, Content }) => (
+              <li class="card">
+                <figure>
+                  <span class="mark" aria-hidden="true">
+                    &ldquo;
+                  </span>
+                  <blockquote>
+                    <Content />
+                  </blockquote>
+                  <figcaption>
+                    <span class="who">{data.author}</span>
+                    <span class="meta">
+                      {[data.location, data.date].filter(Boolean).join(' · ')}
+                      {data.source && <> · via {data.source}</>}
+                    </span>
+                  </figcaption>
+                </figure>
+              </li>
+            ))}
+          </ul>
+          <div class="nav" data-nav hidden>
+            <button type="button" data-prev aria-label="Previous review">&larr;</button>
+            <button type="button" data-next aria-label="Next review">&rarr;</button>
+          </div>
+        </div>
+    </section>
+  )
+}
+
+<script>
+  // Progressive enhancement: the track scrolls and snaps fine on its own;
+  // buttons are only revealed when JS is around to power them.
+  document.querySelectorAll<HTMLElement>('[data-carousel]').forEach((root) => {
+    const track = root.querySelector<HTMLElement>('[data-track]');
+    const nav = root.querySelector<HTMLElement>('[data-nav]');
+    if (!track || !nav) return;
+    nav.hidden = false;
+
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const step = () => {
+      const card = track.querySelector<HTMLElement>('.card');
+      return card ? card.offsetWidth : track.clientWidth;
+    };
+    const go = (dir: number) =>
+      track.scrollBy({
+        left: dir * step(),
+        behavior: reduceMotion.matches ? 'auto' : 'smooth',
+      });
+
+    root.querySelector('[data-prev]')?.addEventListener('click', () => go(-1));
+    root.querySelector('[data-next]')?.addEventListener('click', () => go(1));
+  });
+</script>
+
+<style>
+  .testimonials { padding: var(--space-section) 0; }
+  .inner { max-width: 72rem; margin: 0 auto; }
+  .heading {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
+    padding: 0 1.25rem;
+    margin-bottom: 1.75rem;
+  }
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 560;
+    margin: 0;
+  }
+  .badge {
+    color: var(--aqua-deep);
+    font-weight: 700;
+    font-size: 0.92rem;
+    text-decoration: underline;
+    text-decoration-color: rgba(21, 94, 110, 0.35);
+    text-underline-offset: 0.25em;
+    white-space: nowrap;
+  }
+  .badge:hover { text-decoration-color: var(--aqua-deep); }
+  .stars { color: var(--coral); letter-spacing: 0.08em; margin-right: 0.35em; }
+
+  .carousel { position: relative; }
+  .track {
+    list-style: none;
+    margin: 0;
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: min(26rem, 82%);
+    gap: 1.25rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    /* First card aligns with the heading text; overflow bleeds to the viewport edge */
+    padding: 0.5rem max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem)) 1.5rem;
+    scroll-padding-inline: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+    scrollbar-width: none;
+  }
+  .track::-webkit-scrollbar { display: none; }
+  .track:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+
+  .card { scroll-snap-align: start; display: flex; }
+  figure {
+    background: var(--shell);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    padding: 1.9rem 1.75rem 1.6rem;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+  }
+  .mark {
+    font-family: var(--font-display);
+    font-size: 3rem;
+    line-height: 0.6;
+    color: var(--aqua);
+    display: block;
+    margin-bottom: 0.6rem;
+  }
+  blockquote { margin: 0 0 1.25rem; flex: 1; }
+  blockquote :global(p) {
+    margin: 0;
+    font-family: var(--font-display);
+    font-size: 1.15rem;
+    font-weight: 480;
+    line-height: 1.5;
+    text-wrap: pretty;
+  }
+  figcaption { display: flex; flex-direction: column; gap: 0.1rem; }
+  .who { font-weight: 800; color: var(--pine-deep); }
+  .meta { font-size: 0.85rem; color: var(--ink-soft); }
+
+  .nav {
+    display: flex;
+    gap: 0.6rem;
+    justify-content: flex-end;
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0 1.25rem;
+  }
+  .nav button {
+    background: var(--shell);
+    color: var(--aqua-deep);
+    border: 0;
+    border-radius: 999px;
+    width: 2.75rem;
+    height: 2.75rem;
+    font-size: 1.15rem;
+    cursor: pointer;
+    box-shadow: var(--shadow-soft);
+  }
+  .nav button:hover { background: var(--aqua-mist); }
+  .nav button:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+
+  @media (max-width: 48rem) {
+    .track { grid-auto-columns: 88%; }
+  }
+</style>
