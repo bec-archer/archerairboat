@@ -33,8 +33,6 @@ const testimonials = await Promise.all(
           </a>
         </div>
       </div>
-      {/* Carousel sits outside .inner so cards can bleed to the viewport edge;
-          the track's own padding re-aligns the first card with the column. */}
       <div class="carousel" data-carousel>
           <ul class="track" data-track tabindex="0">
             {testimonials.map(({ data, Content }) => (
@@ -131,9 +129,14 @@ const testimonials = await Promise.all(
     gap: 1.25rem;
     overflow-x: auto;
     scroll-snap-type: x mandatory;
-    /* First card aligns with the heading text; overflow bleeds to the viewport edge */
-    padding: 0.5rem max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem)) 1.5rem;
-    scroll-padding-inline: max(1.25rem, calc((100vw - 72rem) / 2 + 1.25rem));
+    /* Contained in the same 72rem column as the heading. A viewport-edge
+       bleed looked broken on wide screens (cards ran to the glass while the
+       heading stayed centered), so the scrollport clips at the column edge
+       and the cut-off next card is the scroll affordance. */
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: 0.5rem 1.25rem 1.5rem;
+    scroll-padding-inline: 1.25rem;
     scrollbar-width: none;
   }
   .track::-webkit-scrollbar { display: none; }
