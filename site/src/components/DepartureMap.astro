@@ -1,0 +1,176 @@
+---
+// Where we launch — departure map for the homepage.
+// Location: D&D Boat Ramp 2, Matlacha, FL. Coordinates resolved from Bec's
+// Google Maps pin on 2026-07-20: 26.6403079, -82.0561374.
+// Map: Leaflet (open-source, no API key) + CARTO Voyager tiles (free, OSM data).
+// Works without JS too — the address and Get Directions button below are real
+// content, so a failed tile/script load still tells visitors where to go.
+interface Props {
+  phone: string;
+  phoneHref: string;
+}
+const { phone, phoneHref } = Astro.props;
+
+const LAT = 26.6403079;
+const LNG = -82.0561374;
+const PLACE = 'D&D Boat Ramp 2';
+// Google Maps navigation deep link (opens turn-by-turn on mobile).
+const DIRECTIONS = `https://www.google.com/maps/dir/?api=1&destination=${LAT},${LNG}`;
+
+// Teardrop marker in the site's aqua, rendered as a Leaflet divIcon.
+const PIN_SVG = `<svg width="40" height="52" viewBox="0 0 40 52" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M20 0C9 0 0 8.9 0 19.9 0 34 20 52 20 52s20-18 20-32.1C40 8.9 31 0 20 0z" fill="#0e7490"/><circle cx="20" cy="19.5" r="7.5" fill="#ffffff"/></svg>`;
+---
+
+<section class="launch" id="getting-here">
+  <div class="inner">
+    <h2>Where we launch</h2>
+    <p class="sub">
+      We put in right in Matlacha, at D&amp;D Boat Ramp 2 beside D&amp;D Bait &amp; Tackle. No
+      hour-long van ride, no swamp. Park, meet Capt. Bobby, and you are on the water in minutes.
+    </p>
+
+    <link is:inline rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <div id="launch-map" role="application"
+      aria-label="Map showing the tour departure point at D&D Boat Ramp 2 in Matlacha, Florida"></div>
+
+    <div class="meet">
+      <div class="addr">
+        <p class="addr-label">Meet here</p>
+        <p class="addr-line">D&amp;D Boat Ramp 2 · Matlacha, FL</p>
+        <p class="addr-sub">Beside D&amp;D Bait &amp; Tackle, 3922 Pine Island Rd NW</p>
+      </div>
+      <div class="actions">
+        <a class="dir" href={DIRECTIONS} target="_blank" rel="noopener">Get directions</a>
+        <a class="call" href={phoneHref}>Call or text {phone}</a>
+      </div>
+    </div>
+  </div>
+
+  <script is:inline src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script is:inline define:vars={{ LAT, LNG, PLACE, DIRECTIONS, PIN_SVG }}>
+    document.addEventListener('DOMContentLoaded', () => {
+      const el = document.getElementById('launch-map');
+      if (!el || !window.L) return;
+
+      const map = L.map(el, {
+        scrollWheelZoom: false, // don't hijack page scroll; re-enabled on focus
+        zoomControl: true,
+      }).setView([LAT, LNG], 15);
+
+      L.tileLayer(
+        'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
+        {
+          attribution:
+            '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+          maxZoom: 19,
+        }
+      ).addTo(map);
+
+      const icon = L.divIcon({
+        className: 'launch-pin',
+        html: PIN_SVG,
+        iconSize: [40, 52],
+        iconAnchor: [20, 50],
+        popupAnchor: [0, -46],
+      });
+
+      L.marker([LAT, LNG], { icon, title: PLACE, keyboard: true, alt: PLACE })
+        .addTo(map)
+        .bindPopup(
+          '<strong>' + PLACE + '</strong><br>Tour departure point<br>' +
+          '<a href="' + DIRECTIONS + '" target="_blank" rel="noopener">Get directions &#8599;</a>'
+        );
+
+      // Scroll-zoom only while the map has focus, so the page still scrolls past it.
+      map.on('focus', () => map.scrollWheelZoom.enable());
+      map.on('blur', () => map.scrollWheelZoom.disable());
+    });
+  </script>
+</section>
+
+<style>
+  .launch {
+    background: var(--aqua-mist);
+    padding: var(--space-section) 1.25rem;
+  }
+  .inner { max-width: 72rem; margin: 0 auto; }
+  h2 {
+    font-family: var(--font-display);
+    font-size: var(--step-3);
+    font-weight: 560;
+    margin: 0 0 0.6rem;
+  }
+  .sub {
+    color: var(--ink-soft);
+    max-width: 52ch;
+    margin: 0 0 1.75rem;
+  }
+  #launch-map {
+    height: 440px;
+    width: 100%;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-soft);
+    overflow: hidden;
+    background: var(--sand-deep); /* fallback tint before tiles paint */
+    z-index: 0; /* keep Leaflet panes under the site header */
+  }
+  .meet {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.25rem;
+    margin-top: 1.5rem;
+  }
+  .addr-label {
+    color: var(--pine-deep);
+    font-weight: 800;
+    font-size: 0.8rem;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    margin: 0 0 0.2rem;
+  }
+  .addr-line { font-weight: 700; color: var(--ink); margin: 0 0 0.15rem; }
+  .addr-sub { color: var(--ink-soft); font-size: 0.95rem; margin: 0; }
+  .actions { display: flex; flex-wrap: wrap; gap: 0.75rem; align-items: center; }
+  .dir {
+    display: inline-block;
+    background: var(--aqua);
+    color: var(--shell);
+    font-weight: 700;
+    text-decoration: none;
+    padding: 0.8rem 1.6rem;
+    border-radius: 999px;
+    box-shadow: var(--shadow-soft);
+  }
+  .dir:hover { background: var(--aqua-deep); transform: translateY(-1px); }
+  .call {
+    color: var(--aqua-deep);
+    font-weight: 700;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .call:hover { text-decoration: underline; }
+
+  /* Marker: soft shadow under the teardrop pin. */
+  :global(.launch-pin) {
+    filter: drop-shadow(0 4px 5px rgba(18, 58, 63, 0.35));
+    background: transparent;
+    border: 0;
+  }
+  /* Leaflet popup tuned to site type. */
+  :global(.launch .leaflet-popup-content) {
+    font-family: var(--font-body);
+    color: var(--ink);
+    line-height: 1.5;
+  }
+  :global(.launch .leaflet-popup-content a) { color: var(--aqua-deep); font-weight: 700; }
+
+  @media (max-width: 40rem) {
+    #launch-map { height: 320px; }
+    .meet { flex-direction: column; align-items: flex-start; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .dir:hover { transform: none; }
+  }
+</style>
