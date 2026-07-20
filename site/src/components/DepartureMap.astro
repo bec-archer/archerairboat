@@ -2,9 +2,11 @@
 // Where we launch — departure map for the homepage.
 // Location: D&D Boat Ramp 2, Matlacha, FL. Coordinates resolved from Bec's
 // Google Maps pin on 2026-07-20: 26.6403079, -82.0561374.
-// Map: Leaflet (open-source, no API key) + CARTO Voyager tiles (free, OSM data).
-// Works without JS too — the address and Get Directions button below are real
-// content, so a failed tile/script load still tells visitors where to go.
+// Map: Leaflet (open-source, no API key). Base layers: CARTO Voyager street tiles
+// (free, OSM data) + Esri World Imagery satellite (free, no key), toggled via a
+// Leaflet layers control. Works without JS too — the address and Get Directions
+// button below are real content, so a failed tile/script load still tells
+// visitors where to go.
 interface Props {
   phone: string;
   phoneHref: string;
@@ -57,14 +59,36 @@ const PIN_SVG = `<svg width="40" height="52" viewBox="0 0 40 52" xmlns="http://w
         zoomControl: true,
       }).setView([LAT, LNG], 15);
 
-      L.tileLayer(
+      // Street base layer (default): CARTO Voyager over OSM data.
+      const street = L.tileLayer(
         'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png',
         {
           attribution:
             '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
           maxZoom: 19,
         }
-      ).addTo(map);
+      );
+
+      // Satellite base layer: Esri World Imagery (free, no API key).
+      const satellite = L.tileLayer(
+        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+        {
+          attribution:
+            'Imagery &copy; <a href="https://www.esri.com">Esri</a>, Maxar, Earthstar Geographics, and the GIS User Community',
+          maxZoom: 19,
+        }
+      );
+
+      street.addTo(map);
+
+      // Let visitors flip between the street map and the aerial view.
+      L.control
+        .layers(
+          { Map: street, Satellite: satellite },
+          null,
+          { position: 'topright' }
+        )
+        .addTo(map);
 
       const icon = L.divIcon({
         className: 'launch-pin',
@@ -165,6 +189,15 @@ const PIN_SVG = `<svg width="40" height="52" viewBox="0 0 40 52" xmlns="http://w
     line-height: 1.5;
   }
   :global(.launch .leaflet-popup-content a) { color: var(--aqua-deep); font-weight: 700; }
+
+  /* Layers toggle tuned to site type. */
+  :global(.launch .leaflet-control-layers) {
+    font-family: var(--font-body);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-soft);
+    border: 0;
+  }
+  :global(.launch .leaflet-control-layers-list) { color: var(--ink); }
 
   @media (max-width: 40rem) {
     #launch-map { height: 320px; }
