@@ -12,6 +12,7 @@ const year = new Date().getFullYear();
     <p><strong>Archer Airboat Tours</strong> · Matlacha, Florida</p>
     <p><a href={phoneHref}>{phone}</a></p>
     <p class="fine">© {year} Archer Airboat Tours. Private coastal airboat tours of Matlacha Pass, Pine Island Sound &amp; Charlotte Harbor.</p>
+    <p class="credit">Web design by <a href="https://slack-tide.dev" target="_blank" rel="noopener">Bec Archer at Slack Tide</a></p>
   </div>
 </footer>
 
@@ -21,4 +22,6 @@ const year = new Date().getFullYear();
   p { margin: 0 0 0.4rem; }
   a { color: var(--sand); font-weight: 700; }
   .fine { font-size: 0.85rem; opacity: 0.7; margin-top: 1rem; }
+  .credit { font-size: 0.8rem; opacity: 0.55; margin-top: 0.6rem; }
+  .credit a { font-weight: 600; text-decoration: underline; text-underline-offset: 2px; }
 </style>
